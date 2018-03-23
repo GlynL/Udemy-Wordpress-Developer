@@ -52,3 +52,7 @@ In most other programming situations your instinct is correct; if we only have o
 * working '/event' page <!-- has_archive inside the mu_plugin -->
 * events instead of event <!-- rewrite slug mu_plugin -->
 * custom archive page for event <!-- archive-event.php -->
+
+# misc
+* can do excerpts for your posts in admin
+* have to edit the custom post type to allow excerpts
