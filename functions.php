@@ -22,6 +22,8 @@
   
   // after_setup_theme is a hook
   add_action('after_setup_theme', 'university_features');
-
+  
+  
+  
 
   // don't have to close php tags - useful when adding to end of file often

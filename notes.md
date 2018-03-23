@@ -35,3 +35,20 @@ In most other programming situations your instinct is correct; if we only have o
 * create new query - $variable = new WP_Query();
 * WP_Query is a class - supply array of args
 * wp_reset_postdata(); - call after using custom query
+
+# general notes
+* get_post_type() === 'post' <!-- check if the page is a blog (post) -->
+* wp has posts & pages - page is really just a post type of page
+
+* workflow - gulp watch
+* css - style.css in css folder which imports all the seperate styles <!-- then compiles into style.css (main folder) to be used -->
+
+# Custom Post Types
+* default is post & page <!-- pages are a actually a post type -->
+* adding events - first functions.php (not best place as changing themes will ruin functionality) <!-- plugin is better! -->
+* must-use plugins - inside wp-content folder (mu-plugins) <!-- can't deactivate -->
+
+* rebuild permalinks after adding new custom post types <!-- settings/permalinks/save -->
+* working '/event' page <!-- has_archive inside the mu_plugin -->
+* events instead of event <!-- rewrite slug mu_plugin -->
+* custom archive page for event <!-- archive-event.php -->
