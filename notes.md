@@ -56,3 +56,12 @@ In most other programming situations your instinct is correct; if we only have o
 # misc
 * can do excerpts for your posts in admin
 * have to edit the custom post type to allow excerpts
+
+# Custom Fields
+* built-in is not a good user experience
+* good use for plugin <!-- ACF or CMB2` -->
+
+* using php class DateTime() to give us the formatting we want from event_date acf
+
+# Custom Queries - ordering/sorting
+* 
