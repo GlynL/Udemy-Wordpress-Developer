@@ -6,7 +6,7 @@
       <h1 class="headline headline--large">Welcome!</h1>
       <h2 class="headline headline--medium">We think you&rsquo;ll like it here.</h2>
       <h3 class="headline headline--small">Why don&rsquo;t you check out the <strong>major</strong> you&rsquo;re interested in?</h3>
-      <a href="#" class="btn btn--large btn--blue">Find Your Major</a>
+      <a href="<?php echo get_post_type_archive_link('program');?>" class="btn btn--large btn--blue">Find Your Major</a>
     </div>
   </div>
 
@@ -16,9 +16,24 @@
         <h2 class="headline headline--small-plus t-center">Upcoming Events</h2>
         
         <?php
+          // custom query
+          // same format as custom field returns
+          $today = date('Ymd');
           $homepageEvents = new WP_Query(array(
+            // -1 returns all posts that meet query
             'posts_per_page' => 2,
             'post_type' => 'event',
+            'meta_key' => 'event_date',
+            'orderby' => 'meta_value_num',
+            'order' => 'ASC',
+            'meta_query' => array(
+              array(
+                'key' => 'event_date',
+                'compare' => '>=',
+                'value' => $today,
+                'type' => 'numeric'
+              )
+            )
           ));
 
           while ($homepageEvents->have_posts()) {

@@ -64,4 +64,27 @@ In most other programming situations your instinct is correct; if we only have o
 * using php class DateTime() to give us the formatting we want from event_date acf
 
 # Custom Queries - ordering/sorting
-* 
+* using meta_query to sort from custom field
+
+# Manipulating Default URL Based Queries
+* custom queries are the right choice when what you want to do isn't related to default behaviour of url <!-- home page event dates not events page -->
+* add action to functions.php
+
+# Past Events Page
+* custom html for a page - page-slug <!-- page-past-events -->
+* out of box -pagination links only work with default queries wordpress makes itself tied to current url
+
+# Creating Relationships between Content
+* ACF - field w/ field type 'relationship'
+
+# displaying relationships (frontend)
+* to check what a variable contains <!-- print_r($variable) -->
+
+* ACF gives us get_field() function
+* can loop over related programs found with get_field
+
+* linking programs to events - no custom field - can query database (custom query)
+* need to concatonate quotations around get_the_ID() due to database serializing data and you will get additional false positivies <!-- e.g. match 12 as well as 120 -->
+
+# Professors Post Type
+* if running multiple wp custom queries need to use wp_reset_postdata() inbetween
