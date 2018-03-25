@@ -14,10 +14,17 @@
   add_action('wp_enqueue_scripts', 'university_files');
 
   function university_features() {
+    // if we use a wp menu
     register_nav_menu('headerMenuLocation', 'Header Menu Location');
     register_nav_menu('footerLocationOne', 'Footer Location One');
     register_nav_menu('footerLocationTwo', 'Footer Location Two');
+    
     add_theme_support('title-tag');
+    // featured images
+    add_theme_support('post-thumbnails');
+    // any name, width, height, crop(or not)
+    add_image_size('professorLandscape', 400, 260, true);
+    add_image_size('professorPortrait', 480, 650, true);
   }
   
   // after_setup_theme is a hook

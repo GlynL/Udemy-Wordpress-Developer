@@ -88,3 +88,15 @@ In most other programming situations your instinct is correct; if we only have o
 
 # Professors Post Type
 * if running multiple wp custom queries need to use wp_reset_postdata() inbetween
+
+# Featured Image (Post Thumbnail)
+* not enabled by default
+* add_theme_support() in functions.php
+* for custom post types we need to do more 
+  * add thumbnail to muplugin
+* images saved in wp-content -> uploads
+* will automatically produce images of different sizes
+* can add your own sizes that are needed in functions.php - add_image_size()
+* won't add sizes to images already uploaded
+ * plugin to do this - regenerate thumbnails
+ 
