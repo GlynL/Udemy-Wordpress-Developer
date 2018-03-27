@@ -1,18 +1,10 @@
 <?php
   get_header();
 
+  pageBanner();
+
   while(have_posts()) {
     the_post(); ?>
-
-    <div class="page-banner">
-      <div class="page-banner__bg-image" style="background-image: url(<?php echo get_theme_file_uri('/images/ocean.jpg') ?>);"></div>
-        <div class="page-banner__content container container--narrow">
-          <h1 class="page-banner__title"><?php the_title() ?></h1>
-            <div class="page-banner__intro">
-              <p>Don't forget to replace me later!</p>
-        </div>
-      </div>  
-    </div>
 
     <div class='container container--narrow page-section'>
       <div class="metabox metabox--position-up metabox--with-home-link">
@@ -48,7 +40,7 @@
               $relatedProfessors->the_post(); ?>
               <li class='professor-card__list-item'>
                 <a class='professor-card' href="<?php the_permalink(); ?>">
-                  <img class='professor-card__image' src="<?php the_post_thumbnail_url(); ?>" alt="">
+                  <img class='professor-card__image' src="<?php the_post_thumbnail_url('professorLandscape'); ?>" alt="">
                   <span class='professor-card__name'><?php the_title(); ?></span>
                 </a>
               </li>
@@ -89,28 +81,24 @@
             echo '<h2 class="headline headline--medium">Upcoming ' . get_the_title() . ' Events</h2>';
   
             while ($homepageEvents->have_posts()) {
-              $homepageEvents->the_post(); ?>
-  
-              <div class="event-summary">
-                <a class="event-summary__date t-center" href="<?php the_permalink() ?>">
-                  <span class="event-summary__month"><?php 
-                    $eventDate = new DateTime(get_field('event_date'));
-                    echo $eventDate->format('M');
-                  ?></span>
-                  <span class="event-summary__day"><?php echo $eventDate->format('d') ?></span>  
-                </a>      
-                <div class="event-summary__content">
-                  <h5 class="event-summary__title headline headline--tiny"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h5>
-                  <p><?php 
-                    echo (has_excerpt()) ? get_the_excerpt() : wp_trim_words(get_the_content(), 10, '...');
-                  ?><a href="<?php the_permalink(); ?>" class="nu gray">Learn more</a></p>
-                </div>
-              </div>
-  
-            <?php } 
+              $homepageEvents->the_post();
+              get_template_part('template-parts/content-event');
+            } 
           }
 
-       ?>
+          wp_reset_postdata();
+          $relatedCampuses = get_field('related_campus');
+
+          if ($relatedCampuses) { ?>
+            <hr class='section-break'>
+            <h2 class='headline headline--medium'><?php the_title(); ?> is Available At These Campuses</h2>
+            
+            <ul class='min-list link-list'>
+            <?php foreach($relatedCampuses as $campus) { ?>
+              <li><a href="<?php echo get_the_permalink($campus); ?>"><?php echo get_the_title($campus); ?></a></li>
+            <?php }
+            echo '</ul>';
+          } ?>
 
     </div>
 

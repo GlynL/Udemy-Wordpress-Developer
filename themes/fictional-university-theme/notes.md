@@ -100,3 +100,42 @@ In most other programming situations your instinct is correct; if we only have o
 * won't add sizes to images already uploaded
  * plugin to do this - regenerate thumbnails
  
+# Custom Image Sizes (frontend use)
+* add argument (name we gave image) to post thumbnail - the_post_thumbnail('professorThumbnail')
+* cropping wp default will crop to center
+  * can set an array in functions.php image size - tells how to crop <!-- but not all images we want the same -->
+  * manual image crop plugin <!-- not well updated now - good for course -->
+  *  Advanced Custom Fields: Image Crop Add-On <!-- try this one --> 
+
+# Page Banner Dynamic - subtitle/bg image
+* can't use featured image - already used it on the portrait photo for professors
+* custom fields - subtitle & image fields <!-- show if post type is post or post type is not post -- always shows -->
+* ACF image - get_field() returns an array - need to access the url
+
+* print_r() <!-- to find out more about something -->
+* function for printing variable <!-- from comments -->
+ function vd($var) {
+    echo "<pre>";
+    print_r($var);
+    echo "</pre>";
+}
+
+# Create our own function - reusable coe
+* pass associative array as $args
+* use if statements to set defaults if args aren't provided
+* set default $args to NULL - if not provided will still have a value
+
+# Reducing Duplication - get_template_part()
+* get_template_part() accepts two arguments
+  * path of file, second optional argument adds '-argument'
+  * e.g. could use get_post_type() as 2nd arg
+
+* functions vs template
+  * no necessary right or wrong
+  * if you want to pass arguments use function otherwise use template
+
+# Campus Post Type
+* ACF field with type of google map
+* get API key from Google & create add_filter function in functions.php
+  * function adds the api key to acf data
+
