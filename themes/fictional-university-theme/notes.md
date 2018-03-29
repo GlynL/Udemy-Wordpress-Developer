@@ -139,3 +139,26 @@ In most other programming situations your instinct is correct; if we only have o
 * get API key from Google & create add_filter function in functions.php
   * function adds the api key to acf data
 
+# Live Search
+* javascript written in modules, imported to scripts.js & bundled then enqueued in functions.php
+
+# Open & Close Search Overlay
+* updating with keydown is fired too quickly for browser - keyup gives time to register input
+
+
+# WP REST API (AJAX)
+
+# Load WP Content with JS
+* siteurl/wp-json/wp/v2/posts - replace posts w/ pages etc
+  * add /posts-per-page, id, etc..
+  * ?search=
+
+* fetch - course uses jQuery 
+  * use arrow functions to keep 'this'
+
+# HTML Based on JSON Data
+* WP REST API - can use wordpress data/content outside of PHP
+* CRUD - create/read/update/delete 
+* wordpress.org - REST API info
+
+
