@@ -40,10 +40,13 @@
     // random name, files location, does it rely on anything else, version number (whatever), load at bottom(true) or top
     // microtime() to beat caching
     wp_enqueue_script('googleMap', '//maps.googleapis.com/maps/api/js?key=AIzaSyDQytVIrz561xfg8x3rZl79LYx16zTpWKc', NULL, '1.0', true);
-    wp_enqueue_script('main-university-argument', get_theme_file_uri('/js/scripts-bundled.js'), NULL, microtime(), true);
+    wp_enqueue_script('main-university-js', get_theme_file_uri('/js/scripts-bundled.js'), NULL, microtime(), true);
     wp_enqueue_style('font-awesome', 'https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'/* , NULL, microtime() */);
     wp_enqueue_style('custom-google-fonts','https://fonts.googleapis.com/css?family=Roboto+Condensed:300,300i,400,400i,700,700i|Roboto:100,300,400,400i,700,700i');
     wp_enqueue_style('university_main_styles', get_stylesheet_uri());
+    wp_localize_script('main-university-js', 'universityData', array(
+      'root_url' => get_site_url(),
+    ));
   }
   // instuctions to wordpress
   // first argument tell wp what type of instruction

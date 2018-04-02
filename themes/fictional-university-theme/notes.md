@@ -162,3 +162,13 @@ In most other programming situations your instinct is correct; if we only have o
 * wordpress.org - REST API info
 
 
+# Conditional Logic Within Template Literal
+* output js data into html source of webpage <!-- can then access in js -->
+  * wp_localize_script(1, 2, 3);
+    1. main js file (one we want to make flexible)
+    2. function name (doesn't amtter)
+    3. associative array of data we want
+
+# Synchronous vs Asynchronous (1)
+* making search work for more than posts (pages/events/etc)
+  * make multiple requests and join

@@ -13614,6 +13614,7 @@ function () {
   function Search() {
     _classCallCheck(this, Search);
 
+    this.addSearchHTML();
     this.openButton = document.querySelector('.js-search-trigger');
     this.closeButton = document.querySelector('.search-overlay__close');
     this.searchOverlay = document.querySelector('.search-overlay');
@@ -13648,7 +13649,7 @@ function () {
             this.isSpinnerVisible = true;
           }
 
-          this.typingTimer = setTimeout(this.getResults.bind(this), 2000);
+          this.typingTimer = setTimeout(this.getResults.bind(this), 750);
         } else {
           this.resultsDiv.innerHTML = '';
           this.isSpinnerVisible = false;
@@ -13662,16 +13663,21 @@ function () {
     value: function getResults() {
       var _this = this;
 
-      fetch("http://fictional-university.local/wp-json/wp/v2/posts?search=".concat(this.searchField.value)).then(function (response) {
-        if (response.ok) {
-          return response.json();
-        }
-
-        throw new Error('Network response was not ok.');
-      }).then(function (data) {
-        _this.resultsDiv.innerHTML = "\n          <h2 class='search-overlay__section-title'>General Information</h2>\n          <ul class='link-list min-list'>\n            ".concat(data.map(function (item) {
+      // universityData we created in functions.php
+      var combinedResults = [];
+      fetch("".concat(universityData.root_url, "/wp-json/wp/v2/posts?search=").concat(this.searchField.value)).then(function (response) {
+        return response.json();
+      }).then(function (posts) {
+        combinedResults = posts;
+        return fetch("".concat(universityData.root_url, "/wp-json/wp/v2/pages?search=").concat(_this.searchField.value));
+      }).then(function (response) {
+        return response.json();
+      }).then(function (pages) {
+        combinedResults = combinedResults.concat(pages);
+        _this.resultsDiv.innerHTML = "\n          <h2 class='search-overlay__section-title'>General Information</h2>\n          ".concat(combinedResults.length ? '<ul class="link-list min-list">' : '<p>No matches found</p>', "\n            ").concat(combinedResults.map(function (item) {
           return "<li><a href='".concat(item.link, "'>").concat(item.title.rendered, "</li>");
-        }).join(''), "\n          </ul>\n        ");
+        }).join(''), "\n          ").concat(combinedResults.length ? '</ul>' : '', "\n        ");
+        _this.isSpinnerVisible = false;
       }).catch(function (err) {
         console.log("Fetch Error: ".concat(err));
       });
@@ -13683,9 +13689,10 @@ function () {
 
       this.searchOverlay.classList.add('search-overlay--active');
       document.body.classList.add('body-no-scroll');
+      this.searchField.value = '';
       setTimeout(function () {
         return _this2.searchField.focus();
-      }, 500);
+      }, 301);
       this.isOverlayOpen = true;
     }
   }, {
@@ -13705,6 +13712,11 @@ function () {
       if (e.keyCode === 27 && this.isOverlayOpen) {
         this.closeOverlay();
       }
+    }
+  }, {
+    key: "addSearchHTML",
+    value: function addSearchHTML() {
+      document.body.innerHTML += "\n      <div class='search-overlay'>\n        <div class='search-overlay__top'>\n          <div class='container'>\n            <i class='fa fa-search search-overlay__icon' aria-hidden='true'></i>\n            <input type=\"text\" class='search-term' placeholder='What are you looking for?' id='search-term'>\n            <i class='fa fa-window-close search-overlay__close' aria-hidden='true'></i>\n          </div>\n        </div>\n        \n        <div class='container'>\n            <div id='search-overlay__results'></div>\n          </div>\n        </div>\n      \n      </div>";
     }
   }]);
 
