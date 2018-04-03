@@ -45,25 +45,27 @@ class Search {
   }
 
   getResults() {
-    // universityData we created in functions.php
-    let combinedResults = [];
-    fetch(`${universityData.root_url}/wp-json/wp/v2/posts?search=${this.searchField.value}`)
-      .then((response) => {
-        return response.json();
-      })
-      .then((posts) => {
-        combinedResults = posts;
-        return fetch(`${universityData.root_url}/wp-json/wp/v2/pages?search=${this.searchField.value}`)
-      })
-      .then(response => {
-        return response.json();
-      })
-      .then(pages => {
-        combinedResults = combinedResults.concat(pages);
+
+    Promise.all([
+      // universityData we created in functions.php
+      fetch(`${universityData.root_url}/wp-json/wp/v2/posts?search=${this.searchField.value}`)
+        .then(res => {
+          if (res.ok) return res.json();
+          else throw new Error('Something went wrong');
+        })
+      ,
+      fetch(`${universityData.root_url}/wp-json/wp/v2/pages?search=${this.searchField.value}`)
+        .then(res => {
+          if (res.ok) return res.json();
+          else throw new Error('Something went wrong');
+        })
+    ])
+      .then(data => {
+        const combinedResults = data.reduce((accumulator, currentValue) => accumulator.concat(currentValue), [])
         this.resultsDiv.innerHTML = `
           <h2 class='search-overlay__section-title'>General Information</h2>
           ${combinedResults.length ? '<ul class="link-list min-list">' : '<p>No matches found</p>'}
-            ${combinedResults.map(item => `<li><a href='${item.link}'>${item.title.rendered}</li>`).join('')}
+            ${combinedResults.map(item => `<li><a href='${item.link}'>${item.title.rendered}</a>${item.type === 'post' ? ` by ${item.authorName}` : ''}</li>`).join('')}
           ${combinedResults.length ? '</ul>' : ''}
         `
         this.isSpinnerVisible = false;

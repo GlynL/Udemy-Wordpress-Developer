@@ -13663,19 +13663,17 @@ function () {
     value: function getResults() {
       var _this = this;
 
-      // universityData we created in functions.php
-      var combinedResults = [];
-      fetch("".concat(universityData.root_url, "/wp-json/wp/v2/posts?search=").concat(this.searchField.value)).then(function (response) {
-        return response.json();
-      }).then(function (posts) {
-        combinedResults = posts;
-        return fetch("".concat(universityData.root_url, "/wp-json/wp/v2/pages?search=").concat(_this.searchField.value));
-      }).then(function (response) {
-        return response.json();
-      }).then(function (pages) {
-        combinedResults = combinedResults.concat(pages);
+      Promise.all([// universityData we created in functions.php
+      fetch("".concat(universityData.root_url, "/wp-json/wp/v2/posts?search=").concat(this.searchField.value)).then(function (res) {
+        if (res.ok) return res.json();else throw new Error('Something went wrong');
+      }), fetch("".concat(universityData.root_url, "/wp-json/wp/v2/pages?search=").concat(this.searchField.value)).then(function (res) {
+        if (res.ok) return res.json();else throw new Error('Something went wrong');
+      })]).then(function (data) {
+        var combinedResults = data.reduce(function (accumulator, currentValue) {
+          return accumulator.concat(currentValue);
+        }, []);
         _this.resultsDiv.innerHTML = "\n          <h2 class='search-overlay__section-title'>General Information</h2>\n          ".concat(combinedResults.length ? '<ul class="link-list min-list">' : '<p>No matches found</p>', "\n            ").concat(combinedResults.map(function (item) {
-          return "<li><a href='".concat(item.link, "'>").concat(item.title.rendered, "</li>");
+          return "<li><a href='".concat(item.link, "'>").concat(item.title.rendered, "</a>").concat(item.type === 'post' ? " by ".concat(item.authorName) : '', "</li>");
         }).join(''), "\n          ").concat(combinedResults.length ? '</ul>' : '', "\n        ");
         _this.isSpinnerVisible = false;
       }).catch(function (err) {

@@ -169,6 +169,39 @@ In most other programming situations your instinct is correct; if we only have o
     2. function name (doesn't amtter)
     3. associative array of data we want
 
-# Synchronous vs Asynchronous (1)
+# Synchronous vs Asynchronous -workign with multiple post types (1)
 * making search work for more than posts (pages/events/etc)
   * make multiple requests and join
+
+# REST API: Add New Custom Field
+* functions.php - add_action(1, 2)
+  1. wp event you want to hook onto <!-- rest_api_init -->
+  2. function of your creation
+* register_rest_field(1, 2, 3)
+  1. post type you want to customize
+  2. name of new field - whatever you want
+  3. array describing how you manage field
+
+# REST API: Add New Custom Route (URL)
+* default - can't access custom post type
+* in our custom plugin add show_in_rest to post_type
+* api doesn't know to look in custom fields for search term
+* reasons for custom route
+  1. custom search logic
+  2. respond with less JSON data (load faster)
+  3. send 1 request instead of 6 in js
+  4. perfect exercise for sharpening PHP skills
+
+* writing in new file - inc folder - search-route.php & require inside functions.php <!-- saves bloating functions.php -->
+
+* register_rest_route(1, 2, 3)
+  1. url for api - wp indicates core wp - don't use & make unique to avoid plugin conflicts
+  2. route - ending part of url 
+  3. array describing what should happen when url visited
+    - methods - e.g. GET <!-- almost always work, extra mile use WP_REST_SERVER::READABLE -->
+    - callback - function which is json data to be displayed
+
+# Create Your Own Raw JSON Data
+* return php (associative array) & WP will convert into JSON
+* use WP_QUERY & WP loop over results
+
