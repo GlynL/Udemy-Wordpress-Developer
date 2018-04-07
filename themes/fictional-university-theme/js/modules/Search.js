@@ -45,36 +45,81 @@ class Search {
   }
 
   getResults() {
-
-    Promise.all([
-      // universityData we created in functions.php
-      fetch(`${universityData.root_url}/wp-json/wp/v2/posts?search=${this.searchField.value}`)
-        .then(res => {
-          if (res.ok) return res.json();
-          else throw new Error('Something went wrong');
-        })
-      ,
-      fetch(`${universityData.root_url}/wp-json/wp/v2/pages?search=${this.searchField.value}`)
-        .then(res => {
-          if (res.ok) return res.json();
-          else throw new Error('Something went wrong');
-        })
-    ])
-      .then(data => {
-        const combinedResults = data.reduce((accumulator, currentValue) => accumulator.concat(currentValue), [])
+    fetch(`${universityData.root_url}/wp-json/university/v1/search?term=${this.searchField.value}`)
+      .then(res => {
+        if (res.ok) return res.json();
+        else throw new Error('something went wrong');
+      })
+      .then(results => {
+        console.log(results);
         this.resultsDiv.innerHTML = `
-          <h2 class='search-overlay__section-title'>General Information</h2>
-          ${combinedResults.length ? '<ul class="link-list min-list">' : '<p>No matches found</p>'}
-            ${combinedResults.map(item => `<li><a href='${item.link}'>${item.title.rendered}</a>${item.type === 'post' ? ` by ${item.authorName}` : ''}</li>`).join('')}
-          ${combinedResults.length ? '</ul>' : ''}
+        <div class='row'>
+          <div class='one-third'>
+            <h2 class='search-overlay__section-title'>General Information</h2>
+            ${results.generalInfo.length ? '<ul class="link-list min-list">' : '<p>No general information matches this search</p>'}
+            ${results.generalInfo.map(item => `<li><a href='${item.permalink}'>${item.title}</a>${item.postType === 'post' ? ` by ${item.authorName}` : ''}</li>`).join('')}
+            ${results.generalInfo.length ? '</ul>' : ''}
+          </div>
+          <div class='one-third'>
+            <h2 class='search-overlay__section-title'>Programs</h2>
+            ${results.programs.length ? '<ul class="link-list min-list">' : `<p>No programs match this search. <a href="${universityData.root_url}/programs">View all programs</a></p>`}
+            ${results.programs.map(item => `<li><a href='${item.permalink}'>${item.title}</a></li>`).join('')}
+            ${results.programs.length ? '</ul>' : ''}
+            <h2 class='search-overlay__section-title'>Professors</h2>
+            ${results.professors.length ? '<ul class="link-list min-list">' : '<p>No matches found</p>'}
+            ${results.professors.map(item => `<li><a href='${item.permalink}'>${item.title}</a></li>`).join('')}
+            ${results.professors.length ? '</ul>' : ''}
+          </div>
+          <div class='one-third'>
+            <h2 class='search-overlay__section-title'>Campuses</h2>
+            ${results.campuses.length ? '<ul class="link-list min-list">' : `<p>No campuses match this search. <a href="${universityData.root_url}/campuses">View all campuses</a></p>`}
+            ${results.campuses.map(item => `<li><a href='${item.permalink}'>${item.title}</a></li>`).join('')}
+            ${results.campuses.length ? '</ul>' : ''}
+            <h2 class='search-overlay__section-title'>Events</h2>
+            ${results.events.length ? '<ul class="link-list min-list">' : '<p>No matches found</p>'}
+            ${results.events.map(item => `<li><a href='${item.permalink}'>${item.title}</a></li>`).join('')}
+            ${results.events.length ? '</ul>' : ''}
+          </div>
+        </div>
         `
         this.isSpinnerVisible = false;
       })
-
-      .catch((err) => {
+      .catch(err => {
         console.log(`Fetch Error: ${err}`);
       });
   }
+
+
+  // delte this code later
+  //   Promise.all([
+  //     // universityData we created in functions.php
+  //     fetch(`${universityData.root_url}/wp-json/wp/v2/posts?search=${this.searchField.value}`)
+  //       .then(res => {
+  //         if (res.ok) return res.json();
+  //         else throw new Error('Something went wrong');
+  //       })
+  //     ,
+  //     fetch(`${universityData.root_url}/wp-json/wp/v2/pages?search=${this.searchField.value}`)
+  //       .then(res => {
+  //         if (res.ok) return res.json();
+  //         else throw new Error('Something went wrong');
+  //       })
+  //   ])
+  //     .then(data => {
+  //       const combinedResults = data.reduce((accumulator, currentValue) => accumulator.concat(currentValue), [])
+  //       this.resultsDiv.innerHTML = `
+  //         <h2 class='search-overlay__section-title'>General Information</h2>
+  //         ${combinedResults.length ? '<ul class="link-list min-list">' : '<p>No matches found</p>'}
+  //           ${combinedResults.map(item => `<li><a href='${item.link}'>${item.title.rendered}</a>${item.type === 'post' ? ` by ${item.authorName}` : ''}</li>`).join('')}
+  //         ${combinedResults.length ? '</ul>' : ''}
+  //       `
+  //       this.isSpinnerVisible = false;
+  //     })
+
+  //     .catch((err) => {
+  //       console.log(`Fetch Error: ${err}`);
+  //     });
+  // }
 
   openOverlay() {
     this.searchOverlay.classList.add('search-overlay--active');

@@ -73,6 +73,7 @@ In most other programming situations your instinct is correct; if we only have o
 # Past Events Page
 * custom html for a page - page-slug <!-- page-past-events -->
 * out of box -pagination links only work with default queries wordpress makes itself tied to current url
+  * tell how many pages we need
 
 # Creating Relationships between Content
 * ACF - field w/ field type 'relationship'
@@ -120,7 +121,7 @@ In most other programming situations your instinct is correct; if we only have o
     echo "</pre>";
 }
 
-# Create our own function - reusable coe
+# Create our own function - reusable code
 * pass associative array as $args
 * use if statements to set defaults if args aren't provided
 * set default $args to NULL - if not provided will still have a value
@@ -205,3 +206,16 @@ In most other programming situations your instinct is correct; if we only have o
 * return php (associative array) & WP will convert into JSON
 * use WP_QUERY & WP loop over results
 
+# WP_Query & Keyword Searching
+* 's' argument in WP_Query for searching
+* dynamic url w/ search term
+  * data is automatically passed to your callback function (wp_query)
+  * can access $data['watever'] <!-- watever is the ?watever=value -->
+  * sanitize input <!-- sanitize_text_field() -->
+
+# Working with Multiple Post Types
+* change callback function 'post_type' to an array of post types we want
+* results pass into associative array of arrays - one for each post type - use if/switch to check post type and push into correct array
+
+# 3 Column Layout for Search Overlay - Using our new custom API
+* 

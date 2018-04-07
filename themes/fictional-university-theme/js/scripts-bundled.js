@@ -13663,23 +13663,55 @@ function () {
     value: function getResults() {
       var _this = this;
 
-      Promise.all([// universityData we created in functions.php
-      fetch("".concat(universityData.root_url, "/wp-json/wp/v2/posts?search=").concat(this.searchField.value)).then(function (res) {
-        if (res.ok) return res.json();else throw new Error('Something went wrong');
-      }), fetch("".concat(universityData.root_url, "/wp-json/wp/v2/pages?search=").concat(this.searchField.value)).then(function (res) {
-        if (res.ok) return res.json();else throw new Error('Something went wrong');
-      })]).then(function (data) {
-        var combinedResults = data.reduce(function (accumulator, currentValue) {
-          return accumulator.concat(currentValue);
-        }, []);
-        _this.resultsDiv.innerHTML = "\n          <h2 class='search-overlay__section-title'>General Information</h2>\n          ".concat(combinedResults.length ? '<ul class="link-list min-list">' : '<p>No matches found</p>', "\n            ").concat(combinedResults.map(function (item) {
-          return "<li><a href='".concat(item.link, "'>").concat(item.title.rendered, "</a>").concat(item.type === 'post' ? " by ".concat(item.authorName) : '', "</li>");
-        }).join(''), "\n          ").concat(combinedResults.length ? '</ul>' : '', "\n        ");
+      fetch("".concat(universityData.root_url, "/wp-json/university/v1/search?term=").concat(this.searchField.value)).then(function (res) {
+        if (res.ok) return res.json();else throw new Error('something went wrong');
+      }).then(function (results) {
+        console.log(results);
+        _this.resultsDiv.innerHTML = "\n        <div class='row'>\n          <div class='one-third'>\n            <h2 class='search-overlay__section-title'>General Information</h2>\n            ".concat(results.generalInfo.length ? '<ul class="link-list min-list">' : '<p>No general information matches this search</p>', "\n            ").concat(results.generalInfo.map(function (item) {
+          return "<li><a href='".concat(item.permalink, "'>").concat(item.title, "</a>").concat(item.postType === 'post' ? " by ".concat(item.authorName) : '', "</li>");
+        }).join(''), "\n            ").concat(results.generalInfo.length ? '</ul>' : '', "\n          </div>\n          <div class='one-third'>\n            <h2 class='search-overlay__section-title'>Programs</h2>\n            ").concat(results.programs.length ? '<ul class="link-list min-list">' : "<p>No programs match this search. <a href=\"".concat(universityData.root_url, "/programs\">View all programs</a></p>"), "\n            ").concat(results.programs.map(function (item) {
+          return "<li><a href='".concat(item.permalink, "'>").concat(item.title, "</a></li>");
+        }).join(''), "\n            ").concat(results.programs.length ? '</ul>' : '', "\n            <h2 class='search-overlay__section-title'>Professors</h2>\n            ").concat(results.professors.length ? '<ul class="link-list min-list">' : '<p>No matches found</p>', "\n            ").concat(results.professors.map(function (item) {
+          return "<li><a href='".concat(item.permalink, "'>").concat(item.title, "</a></li>");
+        }).join(''), "\n            ").concat(results.professors.length ? '</ul>' : '', "\n          </div>\n          <div class='one-third'>\n            <h2 class='search-overlay__section-title'>Campuses</h2>\n            ").concat(results.campuses.length ? '<ul class="link-list min-list">' : "<p>No campuses match this search. <a href=\"".concat(universityData.root_url, "/campuses\">View all campuses</a></p>"), "\n            ").concat(results.campuses.map(function (item) {
+          return "<li><a href='".concat(item.permalink, "'>").concat(item.title, "</a></li>");
+        }).join(''), "\n            ").concat(results.campuses.length ? '</ul>' : '', "\n            <h2 class='search-overlay__section-title'>Events</h2>\n            ").concat(results.events.length ? '<ul class="link-list min-list">' : '<p>No matches found</p>', "\n            ").concat(results.events.map(function (item) {
+          return "<li><a href='".concat(item.permalink, "'>").concat(item.title, "</a></li>");
+        }).join(''), "\n            ").concat(results.events.length ? '</ul>' : '', "\n          </div>\n        </div>\n        ");
         _this.isSpinnerVisible = false;
       }).catch(function (err) {
         console.log("Fetch Error: ".concat(err));
       });
-    }
+    } // delte this code later
+    //   Promise.all([
+    //     // universityData we created in functions.php
+    //     fetch(`${universityData.root_url}/wp-json/wp/v2/posts?search=${this.searchField.value}`)
+    //       .then(res => {
+    //         if (res.ok) return res.json();
+    //         else throw new Error('Something went wrong');
+    //       })
+    //     ,
+    //     fetch(`${universityData.root_url}/wp-json/wp/v2/pages?search=${this.searchField.value}`)
+    //       .then(res => {
+    //         if (res.ok) return res.json();
+    //         else throw new Error('Something went wrong');
+    //       })
+    //   ])
+    //     .then(data => {
+    //       const combinedResults = data.reduce((accumulator, currentValue) => accumulator.concat(currentValue), [])
+    //       this.resultsDiv.innerHTML = `
+    //         <h2 class='search-overlay__section-title'>General Information</h2>
+    //         ${combinedResults.length ? '<ul class="link-list min-list">' : '<p>No matches found</p>'}
+    //           ${combinedResults.map(item => `<li><a href='${item.link}'>${item.title.rendered}</a>${item.type === 'post' ? ` by ${item.authorName}` : ''}</li>`).join('')}
+    //         ${combinedResults.length ? '</ul>' : ''}
+    //       `
+    //       this.isSpinnerVisible = false;
+    //     })
+    //     .catch((err) => {
+    //       console.log(`Fetch Error: ${err}`);
+    //     });
+    // }
+
   }, {
     key: "openOverlay",
     value: function openOverlay() {

@@ -10,6 +10,7 @@
 <div class='container container--narrow page-section'>
   <?php
     $pastEvents = new WP_Query(array(
+      // for pagination - which page number - get_query_var gets it from url - 1 is a fallback (also not shown on 1st page)
       'paged' => get_query_var('paged', 1),
       'post_type' => 'event',
       'meta_key' => 'event_date',
