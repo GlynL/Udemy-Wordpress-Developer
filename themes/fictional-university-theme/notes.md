@@ -1,4 +1,4 @@
-## looping on a single page
+`## looping on a single page
 In most other programming situations your instinct is correct; if we only have one item there's no need to loop. However, this is the "standard" way of doing things in WordPress because we want to keep our template files flexible, and also because WordPress does lots of things for us behind the scenes when we call the_post();  and it prefers that we work within a loop.
 
 * single.php - template for singular posts
@@ -218,4 +218,43 @@ In most other programming situations your instinct is correct; if we only have o
 * results pass into associative array of arrays - one for each post type - use if/switch to check post type and push into correct array
 
 # 3 Column Layout for Search Overlay - Using our new custom API
-* 
+
+# Custom Layout & JSON based on Post Type
+
+# Search Logic That's Aware of Relationships (1)
+* professors w/ related programs - programs are saved in db under id # <!-- biology is id #87 -->
+* add query to api
+
+# Search Logic That's Aware of Relationships (2)
+* making query dynamic
+  * add 'id' to programs json - filter for matching id in professors related programs query
+  * query relation 'OR' - for multiple fitlers (like)
+* only search title not content field for programs
+  * could adjust wp sql - don't like to do unless 100% need to
+  * make acf exactly like body content field which wp doesn't queyr by default <!-- adjust our single-program.php from the_content() -->
+  * hide the default wp content field - delete 'content' from custom post type (mu-plugin)
+
+# Completing our Search Overlay
+* updating related query to add event, campus post types
+* related campus is in programs post not in campus <!-- differnet to event/professor -->
+* in event/professor if we search math the related field is in the event and not the math program. Whereas, the math program contains the related campus field. <!-- keeps the post type with less being related to -->
+
+
+# Traditional WP Searching
+* works even w/out JS
+* add /?s=term to end of url
+* create file search.php for styling
+* create a search form - new page when search icon clicked
+* form on searchpage which submits to a new url
+  * esc_url(site_url()) <!-- gives added protection -->
+  * action='urlyouwant'
+* prevent <a> redirect when js enabled - return false in openOverlay function (serach.js) 
+
+
+# Tradition WP Searching (2)
+* search.php <!-- for search results -->
+* get_search_query() <!-- gives value searched for -->
+  * wp by default won't run malicious code placed inside search <!-- can override with false as argument -->
+  * if you want to output it in a string of html place inside esc_html()
+* get_search_form() <!-- searchform.php file in base -->
+* we haven't done related fields w/ traditional search <!-- xtra section at end -->

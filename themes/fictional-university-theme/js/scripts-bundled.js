@@ -13671,12 +13671,12 @@ function () {
           return "<li><a href='".concat(item.permalink, "'>").concat(item.title, "</a>").concat(item.postType === 'post' ? " by ".concat(item.authorName) : '', "</li>");
         }).join(''), "\n            ").concat(results.generalInfo.length ? '</ul>' : '', "\n          </div>\n          <div class='one-third'>\n            <h2 class='search-overlay__section-title'>Programs</h2>\n            ").concat(results.programs.length ? '<ul class="link-list min-list">' : "<p>No programs match this search. <a href=\"".concat(universityData.root_url, "/programs\">View all programs</a></p>"), "\n            ").concat(results.programs.map(function (item) {
           return "<li><a href='".concat(item.permalink, "'>").concat(item.title, "</a></li>");
-        }).join(''), "\n            ").concat(results.programs.length ? '</ul>' : '', "\n            <h2 class='search-overlay__section-title'>Professors</h2>\n            ").concat(results.professors.length ? '<ul class="link-list min-list">' : '<p>No matches found</p>', "\n            ").concat(results.professors.map(function (item) {
-          return "<li><a href='".concat(item.permalink, "'>").concat(item.title, "</a></li>");
+        }).join(''), "\n            ").concat(results.programs.length ? '</ul>' : '', "\n            <h2 class='search-overlay__section-title'>Professors</h2>\n            ").concat(results.professors.length ? '<ul class="professor-cards">' : '<p>No professors match this search</p>', "\n            ").concat(results.professors.map(function (item) {
+          return "\n            <li class='professor-card__list-item'>\n              <a class='professor-card' href=\"".concat(item.permalink, "\">\n                <img class='professor-card__image' src=\"").concat(item.image, "\" alt=\"\">\n                <span class='professor-card__name'>").concat(item.title, "</span>\n              </a>\n            </li>\n            ");
         }).join(''), "\n            ").concat(results.professors.length ? '</ul>' : '', "\n          </div>\n          <div class='one-third'>\n            <h2 class='search-overlay__section-title'>Campuses</h2>\n            ").concat(results.campuses.length ? '<ul class="link-list min-list">' : "<p>No campuses match this search. <a href=\"".concat(universityData.root_url, "/campuses\">View all campuses</a></p>"), "\n            ").concat(results.campuses.map(function (item) {
           return "<li><a href='".concat(item.permalink, "'>").concat(item.title, "</a></li>");
-        }).join(''), "\n            ").concat(results.campuses.length ? '</ul>' : '', "\n            <h2 class='search-overlay__section-title'>Events</h2>\n            ").concat(results.events.length ? '<ul class="link-list min-list">' : '<p>No matches found</p>', "\n            ").concat(results.events.map(function (item) {
-          return "<li><a href='".concat(item.permalink, "'>").concat(item.title, "</a></li>");
+        }).join(''), "\n            ").concat(results.campuses.length ? '</ul>' : '', "\n            <h2 class='search-overlay__section-title'>Events</h2>\n            ").concat(results.events.length ? '' : "<p>No campuses match this search. <a href=\"".concat(universityData.root_url, "/events\">View all events</a></p>"), "\n            ").concat(results.events.map(function (item) {
+          return "\n            <div class=\"event-summary\">\n              <a class=\"event-summary__date t-center\" href=\"".concat(item.permalink, "\">\n                <span class=\"event-summary__month\">").concat(item.month, "</span>\n                <span class=\"event-summary__day\">").concat(item.day, "</span>  \n              </a>      \n              <div class=\"event-summary__content\">\n                <h5 class=\"event-summary__title headline headline--tiny\"><a href=\"").concat(item.permalink, "\">").concat(item.title, "</a></h5>\n                <p>").concat(item.description, "<a href=\"").concat(item.permalink, "\" class=\"nu gray\">Learn more</a></p>\n              </div>\n            </div>\n            ");
         }).join(''), "\n            ").concat(results.events.length ? '</ul>' : '', "\n          </div>\n        </div>\n        ");
         _this.isSpinnerVisible = false;
       }).catch(function (err) {
@@ -13723,7 +13723,9 @@ function () {
       setTimeout(function () {
         return _this2.searchField.focus();
       }, 301);
-      this.isOverlayOpen = true;
+      this.isOverlayOpen = true; // prevent default behaviour of <a> or <link> elements
+
+      return false;
     }
   }, {
     key: "closeOverlay",
