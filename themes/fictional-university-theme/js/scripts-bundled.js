@@ -33,6 +33,9 @@
 /******/ 	// expose the module cache
 /******/ 	__webpack_require__.c = installedModules;
 /******/
+/******/ 	// identity function for calling harmony imports with the correct context
+/******/ 	__webpack_require__.i = function(value) { return value; };
+/******/
 /******/ 	// define getter function for harmony exports
 /******/ 	__webpack_require__.d = function(exports, name, getter) {
 /******/ 		if(!__webpack_require__.o(exports, name)) {
@@ -60,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 1);
+/******/ 	return __webpack_require__(__webpack_require__.s = 6);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -10280,9 +10283,9 @@ jQuery.nodeName = nodeName;
 // https://github.com/jrburke/requirejs/wiki/Updating-existing-libraries#wiki-anon
 
 if ( true ) {
-	!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = (function() {
+	!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function() {
 		return jQuery;
-	}).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+	}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 }
 
@@ -10330,30 +10333,357 @@ return jQuery;
 "use strict";
 
 
-var _jquery = _interopRequireDefault(__webpack_require__(0));
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
-var _slickCarousel = _interopRequireDefault(__webpack_require__(2));
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _MobileMenu = _interopRequireDefault(__webpack_require__(3));
+var _jquery = __webpack_require__(0);
 
-var _HeroSlider = _interopRequireDefault(__webpack_require__(4));
-
-var _GoogleMap = _interopRequireDefault(__webpack_require__(5));
-
-var _Search = _interopRequireDefault(__webpack_require__(6));
+var _jquery2 = _interopRequireDefault(_jquery);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-// 3rd party packages from NPM
-// Our modules / classes
-// Instantiate a new object using our modules/classes
-var mobileMenu = new _MobileMenu.default();
-var heroSlider = new _HeroSlider.default();
-var googleMap = new _GoogleMap.default();
-var search = new _Search.default();
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var GMap = function () {
+  function GMap() {
+    _classCallCheck(this, GMap);
+
+    var self = this;
+    (0, _jquery2.default)('.acf-map').each(function () {
+      self.new_map((0, _jquery2.default)(this));
+    });
+  } // end constructor
+
+  _createClass(GMap, [{
+    key: 'new_map',
+    value: function new_map($el) {
+
+      // var
+      var $markers = $el.find('.marker');
+
+      // vars
+      var args = {
+        zoom: 16,
+        center: new google.maps.LatLng(0, 0),
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+      };
+
+      // create map
+      var map = new google.maps.Map($el[0], args);
+
+      // add a markers reference
+      map.markers = [];
+
+      var that = this;
+
+      // add markers
+      $markers.each(function () {
+        that.add_marker((0, _jquery2.default)(this), map);
+      });
+
+      // center map
+      this.center_map(map);
+    } // end new_map
+
+  }, {
+    key: 'add_marker',
+    value: function add_marker($marker, map) {
+
+      // var
+      var latlng = new google.maps.LatLng($marker.attr('data-lat'), $marker.attr('data-lng'));
+
+      var marker = new google.maps.Marker({
+        position: latlng,
+        map: map
+      });
+
+      map.markers.push(marker);
+
+      // if marker contains HTML, add it to an infoWindow
+      if ($marker.html()) {
+        // create info window
+        var infowindow = new google.maps.InfoWindow({
+          content: $marker.html()
+        });
+
+        // show info window when marker is clicked
+        google.maps.event.addListener(marker, 'click', function () {
+
+          infowindow.open(map, marker);
+        });
+      }
+    } // end add_marker
+
+  }, {
+    key: 'center_map',
+    value: function center_map(map) {
+
+      // vars
+      var bounds = new google.maps.LatLngBounds();
+
+      // loop through all markers and create bounds
+      _jquery2.default.each(map.markers, function (i, marker) {
+
+        var latlng = new google.maps.LatLng(marker.position.lat(), marker.position.lng());
+
+        bounds.extend(latlng);
+      });
+
+      // only 1 marker?
+      if (map.markers.length == 1) {
+        // set center of map
+        map.setCenter(bounds.getCenter());
+        map.setZoom(16);
+      } else {
+        // fit to bounds
+        map.fitBounds(bounds);
+      }
+    } // end center_map
+
+  }]);
+
+  return GMap;
+}();
+
+exports.default = GMap;
 
 /***/ }),
 /* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _jquery = __webpack_require__(0);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var HeroSlider = function () {
+  function HeroSlider() {
+    _classCallCheck(this, HeroSlider);
+
+    this.els = (0, _jquery2.default)(".hero-slider");
+    this.initSlider();
+  }
+
+  _createClass(HeroSlider, [{
+    key: "initSlider",
+    value: function initSlider() {
+      this.els.slick({
+        autoplay: true,
+        arrows: false,
+        dots: true
+      });
+    }
+  }]);
+
+  return HeroSlider;
+}();
+
+exports.default = HeroSlider;
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _jquery = __webpack_require__(0);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var MobileMenu = function () {
+  function MobileMenu() {
+    _classCallCheck(this, MobileMenu);
+
+    this.menu = (0, _jquery2.default)(".site-header__menu");
+    this.openButton = (0, _jquery2.default)(".site-header__menu-trigger");
+    this.events();
+  }
+
+  _createClass(MobileMenu, [{
+    key: "events",
+    value: function events() {
+      this.openButton.on("click", this.openMenu.bind(this));
+    }
+  }, {
+    key: "openMenu",
+    value: function openMenu() {
+      this.openButton.toggleClass("fa-bars fa-window-close");
+      this.menu.toggleClass("site-header__menu--active");
+    }
+  }]);
+
+  return MobileMenu;
+}();
+
+exports.default = MobileMenu;
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _jquery = __webpack_require__(0);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Search = function () {
+  // 1. describe and create/initiate our object
+  function Search() {
+    _classCallCheck(this, Search);
+
+    this.addSearchHTML();
+    this.resultsDiv = (0, _jquery2.default)("#search-overlay__results");
+    this.openButton = (0, _jquery2.default)(".js-search-trigger");
+    this.closeButton = (0, _jquery2.default)(".search-overlay__close");
+    this.searchOverlay = (0, _jquery2.default)(".search-overlay");
+    this.searchField = (0, _jquery2.default)("#search-term");
+    this.events();
+    this.isOverlayOpen = false;
+    this.isSpinnerVisible = false;
+    this.previousValue;
+    this.typingTimer;
+  }
+
+  // 2. events
+
+
+  _createClass(Search, [{
+    key: "events",
+    value: function events() {
+      this.openButton.on("click", this.openOverlay.bind(this));
+      this.closeButton.on("click", this.closeOverlay.bind(this));
+      (0, _jquery2.default)(document).on("keydown", this.keyPressDispatcher.bind(this));
+      this.searchField.on("keyup", this.typingLogic.bind(this));
+    }
+
+    // 3. methods (function, action...)
+
+  }, {
+    key: "typingLogic",
+    value: function typingLogic() {
+      if (this.searchField.val() != this.previousValue) {
+        clearTimeout(this.typingTimer);
+
+        if (this.searchField.val()) {
+          if (!this.isSpinnerVisible) {
+            this.resultsDiv.html('<div class="spinner-loader"></div>');
+            this.isSpinnerVisible = true;
+          }
+          this.typingTimer = setTimeout(this.getResults.bind(this), 750);
+        } else {
+          this.resultsDiv.html('');
+          this.isSpinnerVisible = false;
+        }
+      }
+
+      this.previousValue = this.searchField.val();
+    }
+  }, {
+    key: "getResults",
+    value: function getResults() {
+      var _this = this;
+
+      _jquery2.default.getJSON(universityData.root_url + '/wp-json/university/v1/search?term=' + this.searchField.val(), function (results) {
+        _this.resultsDiv.html("\n        <div class=\"row\">\n          <div class=\"one-third\">\n            <h2 class=\"search-overlay__section-title\">General Information</h2>\n            " + (results.generalInfo.length ? '<ul class="link-list min-list">' : '<p>No general information matches that search.</p>') + "\n              " + results.generalInfo.map(function (item) {
+          return "<li><a href=\"" + item.permalink + "\">" + item.title + "</a> " + (item.postType == 'post' ? "by " + item.authorName : '') + "</li>";
+        }).join('') + "\n            " + (results.generalInfo.length ? '</ul>' : '') + "\n          </div>\n          <div class=\"one-third\">\n            <h2 class=\"search-overlay__section-title\">Programs</h2>\n            " + (results.programs.length ? '<ul class="link-list min-list">' : "<p>No programs match that search. <a href=\"" + universityData.root_url + "/programs\">View all programs</a></p>") + "\n              " + results.programs.map(function (item) {
+          return "<li><a href=\"" + item.permalink + "\">" + item.title + "</a></li>";
+        }).join('') + "\n            " + (results.programs.length ? '</ul>' : '') + "\n\n            <h2 class=\"search-overlay__section-title\">Professors</h2>\n            " + (results.professors.length ? '<ul class="professor-cards">' : "<p>No professors match that search.</p>") + "\n              " + results.professors.map(function (item) {
+          return "\n                <li class=\"professor-card__list-item\">\n                  <a class=\"professor-card\" href=\"" + item.permalink + "\">\n                    <img class=\"professor-card__image\" src=\"" + item.image + "\">\n                    <span class=\"professor-card__name\">" + item.title + "</span>\n                  </a>\n                </li>\n              ";
+        }).join('') + "\n            " + (results.professors.length ? '</ul>' : '') + "\n\n          </div>\n          <div class=\"one-third\">\n            <h2 class=\"search-overlay__section-title\">Campuses</h2>\n            " + (results.campuses.length ? '<ul class="link-list min-list">' : "<p>No campuses match that search. <a href=\"" + universityData.root_url + "/campuses\">View all campuses</a></p>") + "\n              " + results.campuses.map(function (item) {
+          return "<li><a href=\"" + item.permalink + "\">" + item.title + "</a></li>";
+        }).join('') + "\n            " + (results.campuses.length ? '</ul>' : '') + "\n\n            <h2 class=\"search-overlay__section-title\">Events</h2>\n            " + (results.events.length ? '' : "<p>No events match that search. <a href=\"" + universityData.root_url + "/events\">View all events</a></p>") + "\n              " + results.events.map(function (item) {
+          return "\n                <div class=\"event-summary\">\n                  <a class=\"event-summary__date t-center\" href=\"" + item.permalink + "\">\n                    <span class=\"event-summary__month\">" + item.month + "</span>\n                    <span class=\"event-summary__day\">" + item.day + "</span>  \n                  </a>\n                  <div class=\"event-summary__content\">\n                    <h5 class=\"event-summary__title headline headline--tiny\"><a href=\"" + item.permalink + "\">" + item.title + "</a></h5>\n                    <p>" + item.description + " <a href=\"" + item.permalink + "\" class=\"nu gray\">Learn more</a></p>\n                  </div>\n                </div>\n              ";
+        }).join('') + "\n\n          </div>\n        </div>\n      ");
+        _this.isSpinnerVisible = false;
+      });
+    }
+  }, {
+    key: "keyPressDispatcher",
+    value: function keyPressDispatcher(e) {
+      if (e.keyCode == 83 && !this.isOverlayOpen && !(0, _jquery2.default)("input, textarea").is(':focus')) {
+        this.openOverlay();
+      }
+
+      if (e.keyCode == 27 && this.isOverlayOpen) {
+        this.closeOverlay();
+      }
+    }
+  }, {
+    key: "openOverlay",
+    value: function openOverlay() {
+      var _this2 = this;
+
+      this.searchOverlay.addClass("search-overlay--active");
+      (0, _jquery2.default)("body").addClass("body-no-scroll");
+      this.searchField.val('');
+      setTimeout(function () {
+        return _this2.searchField.focus();
+      }, 301);
+      console.log("our open method just ran!");
+      this.isOverlayOpen = true;
+      return false;
+    }
+  }, {
+    key: "closeOverlay",
+    value: function closeOverlay() {
+      this.searchOverlay.removeClass("search-overlay--active");
+      (0, _jquery2.default)("body").removeClass("body-no-scroll");
+      console.log("our close method just ran!");
+      this.isOverlayOpen = false;
+    }
+  }, {
+    key: "addSearchHTML",
+    value: function addSearchHTML() {
+      (0, _jquery2.default)("body").append("\n      <div class=\"search-overlay\">\n        <div class=\"search-overlay__top\">\n          <div class=\"container\">\n            <i class=\"fa fa-search search-overlay__icon\" aria-hidden=\"true\"></i>\n            <input type=\"text\" class=\"search-term\" placeholder=\"What are you looking for?\" id=\"search-term\">\n            <i class=\"fa fa-window-close search-overlay__close\" aria-hidden=\"true\"></i>\n          </div>\n        </div>\n        \n        <div class=\"container\">\n          <div id=\"search-overlay__results\"></div>\n        </div>\n\n      </div>\n    ");
+    }
+  }]);
+
+  return Search;
+}();
+
+exports.default = Search;
+
+/***/ }),
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*
@@ -10364,7 +10694,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 |___/_|_|\___|_|\_(_)/ |___/
                    |__/
 
- Version: 1.8.1
+ Version: 1.6.0
   Author: Ken Wheeler
  Website: http://kenwheeler.github.io
     Docs: http://kenwheeler.github.io/slick
@@ -10373,7 +10703,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
  */
 /* global window, document, define, jQuery, setInterval, clearInterval */
-;(function(factory) {
+(function(factory) {
     'use strict';
     if (true) {
         !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(0)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
@@ -10405,15 +10735,15 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
                 appendDots: $(element),
                 arrows: true,
                 asNavFor: null,
-                prevArrow: '<button class="slick-prev" aria-label="Previous" type="button">Previous</button>',
-                nextArrow: '<button class="slick-next" aria-label="Next" type="button">Next</button>',
+                prevArrow: '<button type="button" data-role="none" class="slick-prev" aria-label="Previous" tabindex="0" role="button">Previous</button>',
+                nextArrow: '<button type="button" data-role="none" class="slick-next" aria-label="Next" tabindex="0" role="button">Next</button>',
                 autoplay: false,
                 autoplaySpeed: 3000,
                 centerMode: false,
                 centerPadding: '50px',
                 cssEase: 'ease',
                 customPaging: function(slider, i) {
-                    return $('<button type="button" />').text(i + 1);
+                    return $('<button type="button" data-role="none" role="button" tabindex="0" />').text(i + 1);
                 },
                 dots: false,
                 dotsClass: 'slick-dots',
@@ -10422,7 +10752,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
                 edgeFriction: 0.35,
                 fade: false,
                 focusOnSelect: false,
-                focusOnChange: false,
                 infinite: true,
                 initialSlide: 0,
                 lazyLoad: 'ondemand',
@@ -10466,7 +10795,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
                 loadIndex: 0,
                 $nextArrow: null,
                 $prevArrow: null,
-                scrolling: false,
                 slideCount: null,
                 slideWidth: null,
                 $slideTrack: null,
@@ -10474,7 +10802,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
                 sliding: false,
                 slideOffset: 0,
                 swipeLeft: null,
-                swiping: false,
                 $list: null,
                 touchObject: {},
                 transformsEnabled: false,
@@ -10857,7 +11184,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
             _.$dots = dot.appendTo(_.options.appendDots);
 
-            _.$dots.find('li').first().addClass('slick-active');
+            _.$dots.find('li').first().addClass('slick-active').attr('aria-hidden', 'false');
 
         }
 
@@ -10887,7 +11214,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
             _.$slides.wrapAll('<div class="slick-track"/>').parent();
 
         _.$list = _.$slideTrack.wrap(
-            '<div class="slick-list"/>').parent();
+            '<div aria-live="polite" class="slick-list"/>').parent();
         _.$slideTrack.css('opacity', 0);
 
         if (_.options.centerMode === true || _.options.swipeToSlide === true) {
@@ -10920,7 +11247,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         newSlides = document.createDocumentFragment();
         originalSlides = _.$slider.children();
 
-        if(_.options.rows > 0) {
+        if(_.options.rows > 1) {
 
             slidesPerSection = _.options.slidesPerRow * _.options.rows;
             numOfSlides = Math.ceil(
@@ -11123,9 +11450,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
                 .off('mouseenter.slick', $.proxy(_.interrupt, _, true))
                 .off('mouseleave.slick', $.proxy(_.interrupt, _, false));
 
-            if (_.options.accessibility === true) {
-                _.$dots.off('keydown.slick', _.keyHandler);
-            }
         }
 
         _.$slider.off('focus.slick blur.slick');
@@ -11133,11 +11457,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         if (_.options.arrows === true && _.slideCount > _.options.slidesToShow) {
             _.$prevArrow && _.$prevArrow.off('click.slick', _.changeSlide);
             _.$nextArrow && _.$nextArrow.off('click.slick', _.changeSlide);
-
-            if (_.options.accessibility === true) {
-                _.$prevArrow && _.$prevArrow.off('keydown.slick', _.keyHandler);
-                _.$nextArrow && _.$nextArrow.off('keydown.slick', _.keyHandler);
-            }
         }
 
         _.$list.off('touchstart.slick mousedown.slick', _.swipeHandler);
@@ -11166,6 +11485,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         $('[draggable!=true]', _.$slideTrack).off('dragstart', _.preventDefault);
 
         $(window).off('load.slick.slick-' + _.instanceUid, _.setPosition);
+        $(document).off('ready.slick.slick-' + _.instanceUid, _.setPosition);
 
     };
 
@@ -11182,7 +11502,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
         var _ = this, originalSlides;
 
-        if(_.options.rows > 0) {
+        if(_.options.rows > 1) {
             originalSlides = _.$slides.children().children();
             originalSlides.removeAttr('style');
             _.$slider.empty().append(originalSlides);
@@ -11218,6 +11538,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
             _.$dots.remove();
         }
 
+
         if ( _.$prevArrow && _.$prevArrow.length ) {
 
             _.$prevArrow
@@ -11240,6 +11561,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
             if ( _.htmlExpr.test( _.options.nextArrow )) {
                 _.$nextArrow.remove();
             }
+
         }
 
 
@@ -11377,7 +11699,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
         _.$slider
             .off('focus.slick blur.slick')
-            .on('focus.slick blur.slick', '*', function(event) {
+            .on('focus.slick blur.slick',
+                '*:not(.slick-arrow)', function(event) {
 
             event.stopImmediatePropagation();
             var $sf = $(this);
@@ -11410,14 +11733,10 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         var pagerQty = 0;
 
         if (_.options.infinite === true) {
-            if (_.slideCount <= _.options.slidesToShow) {
-                 ++pagerQty;
-            } else {
-                while (breakPoint < _.slideCount) {
-                    ++pagerQty;
-                    breakPoint = counter + _.options.slidesToScroll;
-                    counter += _.options.slidesToScroll <= _.options.slidesToShow ? _.options.slidesToScroll : _.options.slidesToShow;
-                }
+            while (breakPoint < _.slideCount) {
+                ++pagerQty;
+                breakPoint = counter + _.options.slidesToScroll;
+                counter += _.options.slidesToScroll <= _.options.slidesToShow ? _.options.slidesToScroll : _.options.slidesToShow;
             }
         } else if (_.options.centerMode === true) {
             pagerQty = _.slideCount;
@@ -11441,8 +11760,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
             targetLeft,
             verticalHeight,
             verticalOffset = 0,
-            targetSlide,
-            coef;
+            targetSlide;
 
         _.slideOffset = 0;
         verticalHeight = _.$slides.first().outerHeight(true);
@@ -11450,16 +11768,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         if (_.options.infinite === true) {
             if (_.slideCount > _.options.slidesToShow) {
                 _.slideOffset = (_.slideWidth * _.options.slidesToShow) * -1;
-                coef = -1
-
-                if (_.options.vertical === true && _.options.centerMode === true) {
-                    if (_.options.slidesToShow === 2) {
-                        coef = -1.5;
-                    } else if (_.options.slidesToShow === 1) {
-                        coef = -2
-                    }
-                }
-                verticalOffset = (verticalHeight * _.options.slidesToShow) * coef;
+                verticalOffset = (verticalHeight * _.options.slidesToShow) * -1;
             }
             if (_.slideCount % _.options.slidesToScroll !== 0) {
                 if (slideIndex + _.options.slidesToScroll > _.slideCount && _.slideCount > _.options.slidesToShow) {
@@ -11484,9 +11793,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
             verticalOffset = 0;
         }
 
-        if (_.options.centerMode === true && _.slideCount <= _.options.slidesToShow) {
-            _.slideOffset = ((_.slideWidth * Math.floor(_.options.slidesToShow)) / 2) - ((_.slideWidth * _.slideCount) / 2);
-        } else if (_.options.centerMode === true && _.options.infinite === true) {
+        if (_.options.centerMode === true && _.options.infinite === true) {
             _.slideOffset += _.slideWidth * Math.floor(_.options.slidesToShow / 2) - _.slideWidth;
         } else if (_.options.centerMode === true) {
             _.slideOffset = 0;
@@ -11659,12 +11966,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     };
 
     Slick.prototype.initADA = function() {
-        var _ = this,
-                numDotGroups = Math.ceil(_.slideCount / _.options.slidesToShow),
-                tabControlIndexes = _.getNavigableIndexes().filter(function(val) {
-                    return (val >= 0) && (val < _.slideCount);
-                });
-
+        var _ = this;
         _.$slides.add(_.$slideTrack.find('.slick-cloned')).attr({
             'aria-hidden': 'true',
             'tabindex': '-1'
@@ -11672,56 +11974,28 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
             'tabindex': '-1'
         });
 
-        if (_.$dots !== null) {
-            _.$slides.not(_.$slideTrack.find('.slick-cloned')).each(function(i) {
-                var slideControlIndex = tabControlIndexes.indexOf(i);
+        _.$slideTrack.attr('role', 'listbox');
 
-                $(this).attr({
-                    'role': 'tabpanel',
-                    'id': 'slick-slide' + _.instanceUid + i,
-                    'tabindex': -1
-                });
-
-                if (slideControlIndex !== -1) {
-                   var ariaButtonControl = 'slick-slide-control' + _.instanceUid + slideControlIndex
-                   if ($('#' + ariaButtonControl).length) {
-                     $(this).attr({
-                         'aria-describedby': ariaButtonControl
-                     });
-                   }
-                }
+        _.$slides.not(_.$slideTrack.find('.slick-cloned')).each(function(i) {
+            $(this).attr({
+                'role': 'option',
+                'aria-describedby': 'slick-slide' + _.instanceUid + i + ''
             });
+        });
 
+        if (_.$dots !== null) {
             _.$dots.attr('role', 'tablist').find('li').each(function(i) {
-                var mappedSlideIndex = tabControlIndexes[i];
-
                 $(this).attr({
-                    'role': 'presentation'
+                    'role': 'presentation',
+                    'aria-selected': 'false',
+                    'aria-controls': 'navigation' + _.instanceUid + i + '',
+                    'id': 'slick-slide' + _.instanceUid + i + ''
                 });
-
-                $(this).find('button').first().attr({
-                    'role': 'tab',
-                    'id': 'slick-slide-control' + _.instanceUid + i,
-                    'aria-controls': 'slick-slide' + _.instanceUid + mappedSlideIndex,
-                    'aria-label': (i + 1) + ' of ' + numDotGroups,
-                    'aria-selected': null,
-                    'tabindex': '-1'
-                });
-
-            }).eq(_.currentSlide).find('button').attr({
-                'aria-selected': 'true',
-                'tabindex': '0'
-            }).end();
+            })
+                .first().attr('aria-selected', 'true').end()
+                .find('button').attr('role', 'button').end()
+                .closest('div').attr('role', 'toolbar');
         }
-
-        for (var i=_.currentSlide, max=i+_.options.slidesToShow; i < max; i++) {
-          if (_.options.focusOnChange) {
-            _.$slides.eq(i).attr({'tabindex': '0'});
-          } else {
-            _.$slides.eq(i).removeAttr('tabindex');
-          }
-        }
-
         _.activateADA();
 
     };
@@ -11741,11 +12015,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
                .on('click.slick', {
                     message: 'next'
                }, _.changeSlide);
-
-            if (_.options.accessibility === true) {
-                _.$prevArrow.on('keydown.slick', _.keyHandler);
-                _.$nextArrow.on('keydown.slick', _.keyHandler);
-            }
         }
 
     };
@@ -11758,13 +12027,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
             $('li', _.$dots).on('click.slick', {
                 message: 'index'
             }, _.changeSlide);
-
-            if (_.options.accessibility === true) {
-                _.$dots.on('keydown.slick', _.keyHandler);
-            }
         }
 
-        if (_.options.dots === true && _.options.pauseOnDotsHover === true && _.slideCount > _.options.slidesToShow) {
+        if ( _.options.dots === true && _.options.pauseOnDotsHover === true ) {
 
             $('li', _.$dots)
                 .on('mouseenter.slick', $.proxy(_.interrupt, _, true))
@@ -11828,7 +12093,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         $('[draggable!=true]', _.$slideTrack).on('dragstart', _.preventDefault);
 
         $(window).on('load.slick.slick-' + _.instanceUid, _.setPosition);
-        $(_.setPosition);
+        $(document).on('ready.slick.slick-' + _.instanceUid, _.setPosition);
 
     };
 
@@ -11884,30 +12149,17 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
                 var image = $(this),
                     imageSource = $(this).attr('data-lazy'),
-                    imageSrcSet = $(this).attr('data-srcset'),
-                    imageSizes  = $(this).attr('data-sizes') || _.$slider.attr('data-sizes'),
                     imageToLoad = document.createElement('img');
 
                 imageToLoad.onload = function() {
 
                     image
                         .animate({ opacity: 0 }, 100, function() {
-
-                            if (imageSrcSet) {
-                                image
-                                    .attr('srcset', imageSrcSet );
-
-                                if (imageSizes) {
-                                    image
-                                        .attr('sizes', imageSizes );
-                                }
-                            }
-
                             image
                                 .attr('src', imageSource)
                                 .animate({ opacity: 1 }, 200, function() {
                                     image
-                                        .removeAttr('data-lazy data-srcset data-sizes')
+                                        .removeAttr('data-lazy')
                                         .removeClass('slick-loading');
                                 });
                             _.$slider.trigger('lazyLoaded', [_, image, imageSource]);
@@ -11950,21 +12202,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         }
 
         loadRange = _.$slider.find('.slick-slide').slice(rangeStart, rangeEnd);
-
-        if (_.options.lazyLoad === 'anticipated') {
-            var prevSlide = rangeStart - 1,
-                nextSlide = rangeEnd,
-                $slides = _.$slider.find('.slick-slide');
-
-            for (var i = 0; i < _.options.slidesToScroll; i++) {
-                if (prevSlide < 0) prevSlide = _.slideCount - 1;
-                loadRange = loadRange.add($slides.eq(prevSlide));
-                loadRange = loadRange.add($slides.eq(nextSlide));
-                prevSlide--;
-                nextSlide++;
-            }
-        }
-
         loadImages(loadRange);
 
         if (_.slideCount <= _.options.slidesToShow) {
@@ -12053,9 +12290,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
             _.animating = false;
 
-            if (_.slideCount > _.options.slidesToShow) {
-                _.setPosition();
-            }
+            _.setPosition();
 
             _.swipeLeft = null;
 
@@ -12065,11 +12300,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
             if (_.options.accessibility === true) {
                 _.initADA();
-
-                if (_.options.focusOnChange) {
-                    var $currentSlide = $(_.$slides.get(_.currentSlide));
-                    $currentSlide.attr('tabindex', 0).focus();
-                }
             }
 
         }
@@ -12102,33 +12332,19 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
             $imgsToLoad = $( 'img[data-lazy]', _.$slider ),
             image,
             imageSource,
-            imageSrcSet,
-            imageSizes,
             imageToLoad;
 
         if ( $imgsToLoad.length ) {
 
             image = $imgsToLoad.first();
             imageSource = image.attr('data-lazy');
-            imageSrcSet = image.attr('data-srcset');
-            imageSizes  = image.attr('data-sizes') || _.$slider.attr('data-sizes');
             imageToLoad = document.createElement('img');
 
             imageToLoad.onload = function() {
 
-                if (imageSrcSet) {
-                    image
-                        .attr('srcset', imageSrcSet );
-
-                    if (imageSizes) {
-                        image
-                            .attr('sizes', imageSizes );
-                    }
-                }
-
                 image
                     .attr( 'src', imageSource )
-                    .removeAttr('data-lazy data-srcset data-sizes')
+                    .removeAttr('data-lazy')
                     .removeClass('slick-loading');
 
                 if ( _.options.adaptiveHeight === true ) {
@@ -12229,9 +12445,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
             for ( breakpoint in responsiveSettings ) {
 
                 l = _.breakpoints.length-1;
+                currentBreakpoint = responsiveSettings[breakpoint].breakpoint;
 
                 if (responsiveSettings.hasOwnProperty(breakpoint)) {
-                    currentBreakpoint = responsiveSettings[breakpoint].breakpoint;
 
                     // loop through the breakpoints and cut out any existing
                     // ones with the same breakpoint number, we don't want dupes.
@@ -12664,15 +12880,14 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
         if (_.options.centerMode === true) {
 
-            var evenCoef = _.options.slidesToShow % 2 === 0 ? 1 : 0;
-
             centerOffset = Math.floor(_.options.slidesToShow / 2);
 
             if (_.options.infinite === true) {
 
                 if (index >= centerOffset && index <= (_.slideCount - 1) - centerOffset) {
+
                     _.$slides
-                        .slice(index - centerOffset + evenCoef, index + centerOffset + 1)
+                        .slice(index - centerOffset, index + centerOffset + 1)
                         .addClass('slick-active')
                         .attr('aria-hidden', 'false');
 
@@ -12680,7 +12895,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
                     indexOffset = _.options.slidesToShow + index;
                     allSlides
-                        .slice(indexOffset - centerOffset + 1 + evenCoef, indexOffset + centerOffset + 2)
+                        .slice(indexOffset - centerOffset + 1, indexOffset + centerOffset + 2)
                         .addClass('slick-active')
                         .attr('aria-hidden', 'false');
 
@@ -12746,9 +12961,10 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
         }
 
-        if (_.options.lazyLoad === 'ondemand' || _.options.lazyLoad === 'anticipated') {
+        if (_.options.lazyLoad === 'ondemand') {
             _.lazyLoad();
         }
+
     };
 
     Slick.prototype.setupInfinite = function() {
@@ -12779,7 +12995,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
                         .attr('data-slick-index', slideIndex - _.slideCount)
                         .prependTo(_.$slideTrack).addClass('slick-cloned');
                 }
-                for (i = 0; i < infiniteCount  + _.slideCount; i += 1) {
+                for (i = 0; i < infiniteCount; i += 1) {
                     slideIndex = i;
                     $(_.$slides[slideIndex]).clone(true).attr('id', '')
                         .attr('data-slick-index', slideIndex + _.slideCount)
@@ -12821,7 +13037,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
         if (_.slideCount <= _.options.slidesToShow) {
 
-            _.slideHandler(index, false, true);
+            _.setSlideClasses(index);
+            _.asNavFor(index);
             return;
 
         }
@@ -12845,6 +13062,10 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
             return;
         }
 
+        if (_.slideCount <= _.options.slidesToShow) {
+            return;
+        }
+
         if (sync === false) {
             _.asNavFor(index);
         }
@@ -12858,7 +13079,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         if (_.options.infinite === false && _.options.centerMode === false && (index < 0 || index > _.getDotCount() * _.options.slidesToScroll)) {
             if (_.options.fade === false) {
                 targetSlide = _.currentSlide;
-                if (dontAnimate !== true && _.slideCount > _.options.slidesToShow) {
+                if (dontAnimate !== true) {
                     _.animateSlide(slideLeft, function() {
                         _.postSlide(targetSlide);
                     });
@@ -12870,7 +13091,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         } else if (_.options.infinite === false && _.options.centerMode === true && (index < 0 || index > (_.slideCount - _.options.slidesToScroll))) {
             if (_.options.fade === false) {
                 targetSlide = _.currentSlide;
-                if (dontAnimate !== true && _.slideCount > _.options.slidesToShow) {
+                if (dontAnimate !== true) {
                     _.animateSlide(slideLeft, function() {
                         _.postSlide(targetSlide);
                     });
@@ -12940,7 +13161,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
             return;
         }
 
-        if (dontAnimate !== true && _.slideCount > _.options.slidesToShow) {
+        if (dontAnimate !== true) {
             _.animateSlide(targetLeft, function() {
                 _.postSlide(animSlide);
             });
@@ -13012,13 +13233,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
             direction;
 
         _.dragging = false;
-        _.swiping = false;
-
-        if (_.scrolling) {
-            _.scrolling = false;
-            return false;
-        }
-
         _.interrupted = false;
         _.shouldClick = ( _.touchObject.swipeLength > 10 ) ? false : true;
 
@@ -13129,11 +13343,11 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
         var _ = this,
             edgeWasHit = false,
-            curLeft, swipeDirection, swipeLength, positionOffset, touches, verticalSwipeLength;
+            curLeft, swipeDirection, swipeLength, positionOffset, touches;
 
         touches = event.originalEvent !== undefined ? event.originalEvent.touches : null;
 
-        if (!_.dragging || _.scrolling || touches && touches.length !== 1) {
+        if (!_.dragging || touches && touches.length !== 1) {
             return false;
         }
 
@@ -13145,22 +13359,18 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         _.touchObject.swipeLength = Math.round(Math.sqrt(
             Math.pow(_.touchObject.curX - _.touchObject.startX, 2)));
 
-        verticalSwipeLength = Math.round(Math.sqrt(
-            Math.pow(_.touchObject.curY - _.touchObject.startY, 2)));
-
-        if (!_.options.verticalSwiping && !_.swiping && verticalSwipeLength > 4) {
-            _.scrolling = true;
-            return false;
-        }
-
         if (_.options.verticalSwiping === true) {
-            _.touchObject.swipeLength = verticalSwipeLength;
+            _.touchObject.swipeLength = Math.round(Math.sqrt(
+                Math.pow(_.touchObject.curY - _.touchObject.startY, 2)));
         }
 
         swipeDirection = _.swipeDirection();
 
+        if (swipeDirection === 'vertical') {
+            return;
+        }
+
         if (event.originalEvent !== undefined && _.touchObject.swipeLength > 4) {
-            _.swiping = true;
             event.preventDefault();
         }
 
@@ -13320,13 +13530,14 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
             _.$dots
                 .find('li')
-                    .removeClass('slick-active')
-                    .end();
+                .removeClass('slick-active')
+                .attr('aria-hidden', 'true');
 
             _.$dots
                 .find('li')
                 .eq(Math.floor(_.currentSlide / _.options.slidesToScroll))
-                .addClass('slick-active');
+                .addClass('slick-active')
+                .attr('aria-hidden', 'false');
 
         }
 
@@ -13373,389 +13584,47 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 
 /***/ }),
-/* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-
-var _jquery = _interopRequireDefault(__webpack_require__(0));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-var MobileMenu =
-/*#__PURE__*/
-function () {
-  function MobileMenu() {
-    _classCallCheck(this, MobileMenu);
-
-    this.menu = (0, _jquery.default)(".site-header__menu");
-    this.openButton = (0, _jquery.default)(".site-header__menu-trigger");
-    this.events();
-  }
-
-  _createClass(MobileMenu, [{
-    key: "events",
-    value: function events() {
-      this.openButton.on("click", this.openMenu.bind(this));
-    }
-  }, {
-    key: "openMenu",
-    value: function openMenu() {
-      this.openButton.toggleClass("fa-bars fa-window-close");
-      this.menu.toggleClass("site-header__menu--active");
-    }
-  }]);
-
-  return MobileMenu;
-}();
-
-var _default = MobileMenu;
-exports.default = _default;
-
-/***/ }),
-/* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-
-var _jquery = _interopRequireDefault(__webpack_require__(0));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-var HeroSlider =
-/*#__PURE__*/
-function () {
-  function HeroSlider() {
-    _classCallCheck(this, HeroSlider);
-
-    this.els = (0, _jquery.default)(".hero-slider");
-    this.initSlider();
-  }
-
-  _createClass(HeroSlider, [{
-    key: "initSlider",
-    value: function initSlider() {
-      this.els.slick({
-        autoplay: true,
-        arrows: false,
-        dots: true
-      });
-    }
-  }]);
-
-  return HeroSlider;
-}();
-
-var _default = HeroSlider;
-exports.default = _default;
-
-/***/ }),
-/* 5 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-
-var _jquery = _interopRequireDefault(__webpack_require__(0));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-var GMap =
-/*#__PURE__*/
-function () {
-  function GMap() {
-    _classCallCheck(this, GMap);
-
-    var self = this;
-    (0, _jquery.default)('.acf-map').each(function () {
-      self.new_map((0, _jquery.default)(this));
-    });
-  } // end constructor
-
-
-  _createClass(GMap, [{
-    key: "new_map",
-    value: function new_map($el) {
-      // var
-      var $markers = $el.find('.marker'); // vars
-
-      var args = {
-        zoom: 16,
-        center: new google.maps.LatLng(0, 0),
-        mapTypeId: google.maps.MapTypeId.ROADMAP
-      }; // create map
-
-      var map = new google.maps.Map($el[0], args); // add a markers reference
-
-      map.markers = [];
-      var that = this; // add markers
-
-      $markers.each(function () {
-        that.add_marker((0, _jquery.default)(this), map);
-      }); // center map
-
-      this.center_map(map);
-    } // end new_map
-
-  }, {
-    key: "add_marker",
-    value: function add_marker($marker, map) {
-      // var
-      var latlng = new google.maps.LatLng($marker.attr('data-lat'), $marker.attr('data-lng'));
-      var marker = new google.maps.Marker({
-        position: latlng,
-        map: map
-      });
-      map.markers.push(marker); // if marker contains HTML, add it to an infoWindow
-
-      if ($marker.html()) {
-        // create info window
-        var infowindow = new google.maps.InfoWindow({
-          content: $marker.html()
-        }); // show info window when marker is clicked
-
-        google.maps.event.addListener(marker, 'click', function () {
-          infowindow.open(map, marker);
-        });
-      }
-    } // end add_marker
-
-  }, {
-    key: "center_map",
-    value: function center_map(map) {
-      // vars
-      var bounds = new google.maps.LatLngBounds(); // loop through all markers and create bounds
-
-      _jquery.default.each(map.markers, function (i, marker) {
-        var latlng = new google.maps.LatLng(marker.position.lat(), marker.position.lng());
-        bounds.extend(latlng);
-      }); // only 1 marker?
-
-
-      if (map.markers.length == 1) {
-        // set center of map
-        map.setCenter(bounds.getCenter());
-        map.setZoom(16);
-      } else {
-        // fit to bounds
-        map.fitBounds(bounds);
-      }
-    } // end center_map
-
-  }]);
-
-  return GMap;
-}();
-
-var _default = GMap;
-exports.default = _default;
-
-/***/ }),
 /* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
+var _jquery = __webpack_require__(0);
 
-var _jquery = _interopRequireDefault(__webpack_require__(0));
+var _jquery2 = _interopRequireDefault(_jquery);
+
+var _slickCarousel = __webpack_require__(5);
+
+var _slickCarousel2 = _interopRequireDefault(_slickCarousel);
+
+var _MobileMenu = __webpack_require__(3);
+
+var _MobileMenu2 = _interopRequireDefault(_MobileMenu);
+
+var _HeroSlider = __webpack_require__(2);
+
+var _HeroSlider2 = _interopRequireDefault(_HeroSlider);
+
+var _GoogleMap = __webpack_require__(1);
+
+var _GoogleMap2 = _interopRequireDefault(_GoogleMap);
+
+var _Search = __webpack_require__(4);
+
+var _Search2 = _interopRequireDefault(_Search);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-var Search =
-/*#__PURE__*/
-function () {
-  // 1. describe and create/initiate our object
-  function Search() {
-    _classCallCheck(this, Search);
-
-    this.addSearchHTML();
-    this.openButton = document.querySelector('.js-search-trigger');
-    this.closeButton = document.querySelector('.search-overlay__close');
-    this.searchOverlay = document.querySelector('.search-overlay');
-    this.searchField = document.querySelector('#search-term');
-    this.resultsDiv = document.querySelector('#search-overlay__results');
-    this.events();
-    this.isOverlayOpen = false;
-    this.isSpinnerVisible = false;
-    this.previousValue;
-    this.typingTimer;
-  } // 2. events
+// Instantiate a new object using our modules/classes
 
 
-  _createClass(Search, [{
-    key: "events",
-    value: function events() {
-      this.openButton.addEventListener('click', this.openOverlay.bind(this));
-      this.closeButton.addEventListener('click', this.closeOverlay.bind(this));
-      document.addEventListener('keydown', this.keyPressDispatcher.bind(this));
-      this.searchField.addEventListener('keyup', this.typingLogic.bind(this));
-    } // 3. methods (function, action...)
-
-  }, {
-    key: "typingLogic",
-    value: function typingLogic() {
-      if (this.searchField.value !== this.previousValue) {
-        clearTimeout(this.typingTimer);
-
-        if (this.searchField.value) {
-          if (!this.isSpinnerVisible) {
-            this.resultsDiv.innerHTML = '<div class="spinner-loader"></div>';
-            this.isSpinnerVisible = true;
-          }
-
-          this.typingTimer = setTimeout(this.getResults.bind(this), 750);
-        } else {
-          this.resultsDiv.innerHTML = '';
-          this.isSpinnerVisible = false;
-        }
-
-        this.previousValue = this.searchField.value;
-      }
-    }
-  }, {
-    key: "getResults",
-    value: function getResults() {
-      var _this = this;
-
-      fetch("".concat(universityData.root_url, "/wp-json/university/v1/search?term=").concat(this.searchField.value)).then(function (res) {
-        if (res.ok) return res.json();else throw new Error('something went wrong');
-      }).then(function (results) {
-        _this.resultsDiv.innerHTML = "\n        <div class='row'>\n          <div class='one-third'>\n            <h2 class='search-overlay__section-title'>General Information</h2>\n            ".concat(results.generalInfo.length ? '<ul class="link-list min-list">' : '<p>No general information matches this search</p>', "\n            ").concat(results.generalInfo.map(function (item) {
-          return "<li><a href='".concat(item.permalink, "'>").concat(item.title, "</a>").concat(item.postType === 'post' ? " by ".concat(item.authorName) : '', "</li>");
-        }).join(''), "\n            ").concat(results.generalInfo.length ? '</ul>' : '', "\n          </div>\n          <div class='one-third'>\n            <h2 class='search-overlay__section-title'>Programs</h2>\n            ").concat(results.programs.length ? '<ul class="link-list min-list">' : "<p>No programs match this search. <a href=\"".concat(universityData.root_url, "/programs\">View all programs</a></p>"), "\n            ").concat(results.programs.map(function (item) {
-          return "<li><a href='".concat(item.permalink, "'>").concat(item.title, "</a></li>");
-        }).join(''), "\n            ").concat(results.programs.length ? '</ul>' : '', "\n            <h2 class='search-overlay__section-title'>Professors</h2>\n            ").concat(results.professors.length ? '<ul class="professor-cards">' : '<p>No professors match this search</p>', "\n            ").concat(results.professors.map(function (item) {
-          return "\n            <li class='professor-card__list-item'>\n              <a class='professor-card' href=\"".concat(item.permalink, "\">\n                <img class='professor-card__image' src=\"").concat(item.image, "\" alt=\"\">\n                <span class='professor-card__name'>").concat(item.title, "</span>\n              </a>\n            </li>\n            ");
-        }).join(''), "\n            ").concat(results.professors.length ? '</ul>' : '', "\n          </div>\n          <div class='one-third'>\n            <h2 class='search-overlay__section-title'>Campuses</h2>\n            ").concat(results.campuses.length ? '<ul class="link-list min-list">' : "<p>No campuses match this search. <a href=\"".concat(universityData.root_url, "/campuses\">View all campuses</a></p>"), "\n            ").concat(results.campuses.map(function (item) {
-          return "<li><a href='".concat(item.permalink, "'>").concat(item.title, "</a></li>");
-        }).join(''), "\n            ").concat(results.campuses.length ? '</ul>' : '', "\n            <h2 class='search-overlay__section-title'>Events</h2>\n            ").concat(results.events.length ? '' : "<p>No campuses match this search. <a href=\"".concat(universityData.root_url, "/events\">View all events</a></p>"), "\n            ").concat(results.events.map(function (item) {
-          return "\n            <div class=\"event-summary\">\n              <a class=\"event-summary__date t-center\" href=\"".concat(item.permalink, "\">\n                <span class=\"event-summary__month\">").concat(item.month, "</span>\n                <span class=\"event-summary__day\">").concat(item.day, "</span>  \n              </a>      \n              <div class=\"event-summary__content\">\n                <h5 class=\"event-summary__title headline headline--tiny\"><a href=\"").concat(item.permalink, "\">").concat(item.title, "</a></h5>\n                <p>").concat(item.description, "<a href=\"").concat(item.permalink, "\" class=\"nu gray\">Learn more</a></p>\n              </div>\n            </div>\n            ");
-        }).join(''), "\n            ").concat(results.events.length ? '</ul>' : '', "\n          </div>\n        </div>\n        ");
-        _this.isSpinnerVisible = false;
-      }).catch(function (err) {
-        console.log("Fetch Error: ".concat(err));
-      });
-    } // delte this code later
-    //   Promise.all([
-    //     // universityData we created in functions.php
-    //     fetch(`${universityData.root_url}/wp-json/wp/v2/posts?search=${this.searchField.value}`)
-    //       .then(res => {
-    //         if (res.ok) return res.json();
-    //         else throw new Error('Something went wrong');
-    //       })
-    //     ,
-    //     fetch(`${universityData.root_url}/wp-json/wp/v2/pages?search=${this.searchField.value}`)
-    //       .then(res => {
-    //         if (res.ok) return res.json();
-    //         else throw new Error('Something went wrong');
-    //       })
-    //   ])
-    //     .then(data => {
-    //       const combinedResults = data.reduce((accumulator, currentValue) => accumulator.concat(currentValue), [])
-    //       this.resultsDiv.innerHTML = `
-    //         <h2 class='search-overlay__section-title'>General Information</h2>
-    //         ${combinedResults.length ? '<ul class="link-list min-list">' : '<p>No matches found</p>'}
-    //           ${combinedResults.map(item => `<li><a href='${item.link}'>${item.title.rendered}</a>${item.type === 'post' ? ` by ${item.authorName}` : ''}</li>`).join('')}
-    //         ${combinedResults.length ? '</ul>' : ''}
-    //       `
-    //       this.isSpinnerVisible = false;
-    //     })
-    //     .catch((err) => {
-    //       console.log(`Fetch Error: ${err}`);
-    //     });
-    // }
-
-  }, {
-    key: "openOverlay",
-    value: function openOverlay() {
-      var _this2 = this;
-
-      this.searchOverlay.classList.add('search-overlay--active');
-      document.body.classList.add('body-no-scroll');
-      this.searchField.value = '';
-      setTimeout(function () {
-        return _this2.searchField.focus();
-      }, 301);
-      this.isOverlayOpen = true; // prevent default behaviour of <a> or <link> elements
-
-      return false;
-    }
-  }, {
-    key: "closeOverlay",
-    value: function closeOverlay() {
-      this.searchOverlay.classList.remove('search-overlay--active');
-      document.body.classList.remove('body-no-scroll');
-      this.isOverlayOpen = false;
-    }
-  }, {
-    key: "keyPressDispatcher",
-    value: function keyPressDispatcher(e) {
-      if (e.keyCode === 83 && !this.isOverlayOpen && document.querySelectorAll('input:focus, textarea:focus').length === 0) {
-        this.openOverlay();
-      }
-
-      if (e.keyCode === 27 && this.isOverlayOpen) {
-        this.closeOverlay();
-      }
-    }
-  }, {
-    key: "addSearchHTML",
-    value: function addSearchHTML() {
-      document.body.innerHTML += "\n      <div class='search-overlay'>\n        <div class='search-overlay__top'>\n          <div class='container'>\n            <i class='fa fa-search search-overlay__icon' aria-hidden='true'></i>\n            <input type=\"text\" class='search-term' placeholder='What are you looking for?' id='search-term'>\n            <i class='fa fa-window-close search-overlay__close' aria-hidden='true'></i>\n          </div>\n        </div>\n        \n        <div class='container'>\n            <div id='search-overlay__results'></div>\n          </div>\n        </div>\n      \n      </div>";
-    }
-  }]);
-
-  return Search;
-}();
-
-var _default = Search;
-exports.default = _default;
+// Our modules / classes
+// 3rd party packages from NPM
+var mobileMenu = new _MobileMenu2.default();
+var heroSlider = new _HeroSlider2.default();
+var googleMap = new _GoogleMap2.default();
+var search = new _Search2.default();
 
 /***/ })
 /******/ ]);
