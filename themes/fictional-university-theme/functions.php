@@ -116,6 +116,28 @@
   }
   
   add_filter('acf/fields/google_map/api', 'universityMapKey');
+
+  // redirect subscriber accounts out of admin and onto homepage
+  add_action('admin_init', 'redirectSubsToFrontend');
+  
+  function redirectSubsToFrontend() {
+    $ourCurrentUser = wp_get_current_user();
+    if (count($ourCurrentUser->roles) === 1 && $ourCurrentUser->roles[0] === 'subscriber') {
+      wp_redirect(site_url('/'));
+      // tell's php to stop once redirected
+      exit;
+    }
+  }
+
+  // remove admin bar for subs
+  add_action('wp_loaded', 'noSubsAdminBar');
+  
+  function noSubsAdminBar() {
+    $ourCurrentUser = wp_get_current_user();
+    if (count($ourCurrentUser->roles) === 1 && $ourCurrentUser->roles[0] === 'subscriber') {
+      show_admin_bar(false);
+    }
+  }
   
 
   // don't have to close php tags - useful when adding to end of file often

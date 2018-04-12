@@ -258,3 +258,28 @@ In most other programming situations your instinct is correct; if we only have o
   * if you want to output it in a string of html place inside esc_html()
 * get_search_form() <!-- searchform.php file in base -->
 * we haven't done related fields w/ traditional search <!-- xtra section at end -->
+
+
+<!-- =====================
+========= USERS ==========
+====================== -->
+<!-- USER ROLES & PERMISSIONs -->
+
+# User Roles & Permissions
+* create new user in dashboard
+* role is important <!-- might not want to make someone administrator unless tech savvy as they can mess up site -->
+* editor can change all post-types
+* create new user roles to suit what you need <!-- 'members' plugin - gives roles & add new roles to db -->
+* custom post types treated as normal 'posts' - default inherit those role permissions
+* add capability_type in post-types
+* members plugin lets you assign multiple roles to a user
+
+# Open Registation
+* db settings -> general -> membership
+* signup - site-url/wp-signup.php
+* is_user_logged_in()
+* wp_logout_url() <!-- logs user out -->
+* get_avatar(get_current_user_id(), image size)
+* wp directs to admin page on login by default
+  * check user role in functions.php
+* remove admin bar for subscribers in functions.php

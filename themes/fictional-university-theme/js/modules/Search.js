@@ -51,7 +51,6 @@ class Search {
         else throw new Error('something went wrong');
       })
       .then(results => {
-        console.log(results);
         this.resultsDiv.innerHTML = `
         <div class='row'>
           <div class='one-third'>

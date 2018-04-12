@@ -13666,7 +13666,6 @@ function () {
       fetch("".concat(universityData.root_url, "/wp-json/university/v1/search?term=").concat(this.searchField.value)).then(function (res) {
         if (res.ok) return res.json();else throw new Error('something went wrong');
       }).then(function (results) {
-        console.log(results);
         _this.resultsDiv.innerHTML = "\n        <div class='row'>\n          <div class='one-third'>\n            <h2 class='search-overlay__section-title'>General Information</h2>\n            ".concat(results.generalInfo.length ? '<ul class="link-list min-list">' : '<p>No general information matches this search</p>', "\n            ").concat(results.generalInfo.map(function (item) {
           return "<li><a href='".concat(item.permalink, "'>").concat(item.title, "</a>").concat(item.postType === 'post' ? " by ".concat(item.authorName) : '', "</li>");
         }).join(''), "\n            ").concat(results.generalInfo.length ? '</ul>' : '', "\n          </div>\n          <div class='one-third'>\n            <h2 class='search-overlay__section-title'>Programs</h2>\n            ").concat(results.programs.length ? '<ul class="link-list min-list">' : "<p>No programs match this search. <a href=\"".concat(universityData.root_url, "/programs\">View all programs</a></p>"), "\n            ").concat(results.programs.map(function (item) {
