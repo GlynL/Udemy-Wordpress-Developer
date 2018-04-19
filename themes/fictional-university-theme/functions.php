@@ -56,6 +56,7 @@
     wp_enqueue_style('university_main_styles', get_stylesheet_uri());
     wp_localize_script('main-university-js', 'universityData', array(
       'root_url' => get_site_url(),
+      'nonce' => wp_create_nonce('wp_rest')
     ));
   }
   // instuctions to wordpress
@@ -138,6 +139,27 @@
       show_admin_bar(false);
     }
   }
+
+  // customize login screen
+  add_filter('login_headerurl', 'ourHeaderUrl');
+
+  function ourHeaderUrl() {
+    return esc_url(site_url('/'));
+  }
+
+  // load css on login screen
+  add_action('login_enqueue_scripts', 'ourLoginCSS');
+
+  function ourLoginCSS() {
+    wp_enqueue_style('university_main_styles', get_stylesheet_uri());
+    wp_enqueue_style('custom-google-fonts','https://fonts.googleapis.com/css?family=Roboto+Condensed:300,300i,400,400i,700,700i|Roboto:100,300,400,400i,700,700i');
+  }
   
+  add_filter('login_headertitle', 'ourLoginTitle');
+
+  // change title/hover info
+  function ourLoginTitle() {
+    return get_bloginfo('name');
+  }
 
   // don't have to close php tags - useful when adding to end of file often

@@ -1,4 +1,4 @@
-`## looping on a single page
+## looping on a single page
 In most other programming situations your instinct is correct; if we only have one item there's no need to loop. However, this is the "standard" way of doing things in WordPress because we want to keep our template files flexible, and also because WordPress does lots of things for us behind the scenes when we call the_post();  and it prefers that we work within a loop.
 
 * single.php - template for singular posts
@@ -283,3 +283,61 @@ In most other programming situations your instinct is correct; if we only have o
 * wp directs to admin page on login by default
   * check user role in functions.php
 * remove admin bar for subscribers in functions.php
+
+# Open Registration (2) - login screen branding
+* wp_login_url()
+* wp_registration_url()
+* login page icon takes to wp.org by default
+  * customize in functions.php
+  add_filter(1,2)
+  1. value/object you want to customize/filter/change <!-- login_headerurl -->
+  2. function you want to use instead
+* change image by changing background image of element
+  * wp won't load your css by default
+  * functions.php add_action
+* change title/hover info in functions.php <!-- add_filter -->
+
+
+<!--
+ USER GENERATED CONTENT
+ -->
+# 'My Notes' Feature (CRUD)
+* new page - provide button in header if logged in
+* if not logged in - redirect <!-- if they manually type in page -->
+* custom post type - notes
+* esc_attr() makes it safe to use db values in html
+
+# 'My Notes' Front-end (1)
+# 'My Notes' Front-end (2)
+* send a DELETE request to the api url
+* ajax request MyNotes.js
+* create nonce in functions.php university_files
+* beforeSend ajax request - xhr stuff
+
+# 'My Notes' Front-end (3)
+* give note in html a data-id of the note id
+* add this id to delete url
+* remove element on success
+
+* edit note is a PUT request
+* make fields read only - readonly attribute in html
+* select note li group in js - remove readonly & add a stylign class
+
+# Edit/Update Notes with REST API
+* changing edit between edit and cancel - editable/readonly
+  * jquery.data() - no real js sub - stores data for you
+* updateNote - mostly same as deleting - type is POST instead
+* with updating WP requires specifc name - title, content
+
+# Creating New Notes - w/ REST API
+* add a section in html for creating new note
+* similar js to updateNote
+* remove id from url & wp will make a new note
+* new note ends up as a draft in WP by default - set 'status': 'publish'
+
+# Creating New Notes (2)
+* make new note update real data straight away to page
+* when posting to wp rest api it responds with relevant data
+
+* click handlers aren't added to this new note 
+* change listener to parent with a specific class<!-- $('#my-notes').on('click', '.delete-note', this.deleteNote); -->
