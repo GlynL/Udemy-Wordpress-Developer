@@ -13784,6 +13784,10 @@ function () {
           thisNote.slideUp();
           console.log('success');
           console.log(response);
+
+          if (response.userNoteCount < 5) {
+            (0, _jquery.default)('.note-limit-message').removeClass('active');
+          }
         },
         error: function error(response) {
           console.log('fail');
@@ -13799,7 +13803,7 @@ function () {
       var thisNote = (0, _jquery.default)(e.target).parents('li');
       var ourUpdatedPost = {
         'title': thisNote.find('.note-title-field').val(),
-        'content': thisNote.find('note-content-field').val()
+        'content': thisNote.find('.note-body-field').val()
       };
 
       _jquery.default.ajax({
@@ -13844,6 +13848,11 @@ function () {
           console.log(response);
         },
         error: function error(response) {
+          if (response.responseText === 'You have reached your note limit.') {
+            console.log('match');
+            (0, _jquery.default)('.note-limit-message').addClass('active');
+          }
+
           console.log('fail');
           console.log(response);
         }

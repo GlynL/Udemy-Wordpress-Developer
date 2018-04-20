@@ -341,3 +341,35 @@ In most other programming situations your instinct is correct; if we only have o
 
 * click handlers aren't added to this new note 
 * change listener to parent with a specific class<!-- $('#my-notes').on('click', '.delete-note', this.deleteNote); -->
+
+# Note Permissions & Security
+* only use localhost:3000 (gulp) for one window as it can stuff up
+* allowing users to create notes
+  * in register_post_type - capability_type, map_meta_cap
+  * customise roles in dashboard
+
+* REST API is providing note data from all users
+  * WP feature - private content
+  * change createNote status from 'published' to 'private' <!-- can't trust as malicious user can change -->
+  * filter post data to change notes to private if not deleting <!-- add_filter('wp_insert_post_data'... -->
+
+# Note Permissions & Security (2)
+* title has 'Private:' <!-- str_replace() - in page-my-notes -->
+* private notes aren't considered published <!-- don't need to grant edit/delete permission -->
+* WP will remove script tags (unfiltered html) from user content <!-- admins can (general roles -> unfiltered HTML) -->
+* as admin - the HTML/script tags will be there - our esc_attr() stops it from running <!-- rogue admin/hacked/etc -->
+* don't generally want to use on all our content <!-- can't use html then -->
+* basic HTML allowed <!-- <h1>, <li>, etc -->
+  * removing all HTML in functions.php with filter
+
+# Per User Post Limit
+* add to our insert data filter for notes <!-- count_user_posts() -->
+* php - kill current process & can leave message - die(); <!-- excatly same as exit(); -->
+* insert post data hook runs when deleting post too <!-- won't run when limit reached -->
+* no inbuilt way to check if user is trying to create a new note (post)
+  * a new note won't have an id yet <!-- $postarr passed from insert post data and has id value -->
+  * have to tell filter for function to have access to two variables
+  * can also set priority - if setting multiple functions on same hook <!-- set the order run - lower is run first -->
+* output message on frontend to user if limit is reached
+
+* add user note count to REST api response in functions.php
