@@ -373,3 +373,49 @@ In most other programming situations your instinct is correct; if we only have o
 * output message on frontend to user if limit is reached
 
 * add user note count to REST api response in functions.php
+
+<!-- 
+# Like or Heart Count for Professors
+ -->
+
+# Let Users 'Like' Content (1)
+* adding heart/etc to single-professor.php
+* create new custom post type 'like'
+* don't use builtin REST api endpoints - create new endpoints
+* custom field - liked_professor_id - added to like post type
+* frontend reflect number of likes for professor
+* WP_Query & meta_query - result found_posts
+* css setup for 'data-exists' attr to equal 'yes' & displayed filled in(liked) heart
+* 2nd wp_query w/ author as current id
+* make and change a variable w/ 'yes' if results are found (has been liked) - input into data-exists
+
+# Let Users 'Like' Content (2) - Custom REST API endpoints for 'like' actions
+* frontend JS first - if already liked - will delete/remove like, otherwise add
+
+# Creating Custom POST and DELETE API Endpoints
+* create like-route.php in inc & require in functions.php <!-- just to keep tidy -->
+* call new routes in Like.js when clicked
+
+# Programmatically Create a Post - w/ PHP
+* wp_insert_post();
+  * array as argument as field values
+  * custom field - 'meta_input' => array()
+* send data object from js to PHP <!-- data: {} -->
+  * WP treats it the same as adding on to URL <!-- ?professorID=789 -->
+
+
+* .data() html attributes -  retrive in JS w/ .dataset or getAttribute (dataset IE11+)
+
+# Enforce Limit of One Like Per User/Teacher Combo - Permissions & Logic/Restrictions
+* current_user_can('capability') <!-- for specific capabilities -->
+* check for user logged-in, in like-route.php 
+  * will evaluate to false always until we set up NONCE 
+  * NONCE setup in .ajax like.js
+* not logged in - is showing heart as filled in
+  * single-professor WP_Query get_current_user_id() evaluate to 0 - same as not having the line -- wrap all in an if check
+* use wp_query to see if user has already liked this professor - if they have don't let them like again
+* also make sure post type is professor
+
+# Completing Like Box
+* update like box in real time in like.js
+* .data() only updates on refresh - .attr() is on fly
